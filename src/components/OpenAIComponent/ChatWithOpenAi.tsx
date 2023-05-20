@@ -14,9 +14,9 @@ function ChatWithOpenAi() {
 	}
   const handleClick = () => {
     if (formInput.length > 150) {
-      let truncatedContent = formInput.slice(0, 150);
+      let truncatedContent = formInput.slice(0, 150) + "under 70 words";
     }
-    let truncatedContent = formInput;
+    let truncatedContent = formInput + "under 70 words";
     let body = {
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: `${truncatedContent}` }],
