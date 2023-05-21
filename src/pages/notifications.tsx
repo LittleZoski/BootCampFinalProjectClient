@@ -93,7 +93,7 @@ export default function notifications() {
             </Center>
             <Box h="400px" width="100%">
               {/* import friend requests here */}
-              {/* <FriendNotification /> */}
+              <FriendNotification />
             </Box>
           </Box>
 
