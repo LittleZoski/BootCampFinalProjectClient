@@ -1,23 +1,53 @@
-import { useGetOpenFriendRequests } from "@/queries/friend.queries";
+import {
+  useAcceptFriendRequestStateless,
+  useGetOpenFriendRequests,
+  useRejectFriendRequest,
+} from "@/queries/friend.queries";
 import { useSession } from "next-auth/react";
 import Loader from "../CustomComponents/Loader";
-import { Box, Flex, GridItem, HStack, Heading, VStack } from "@chakra-ui/react";
-import { FriendRequestWithUser } from "@/types/friendship";
 import {
-  FriendButton,
-  FriendNotificationButton,
-} from "../Friends/FriendButton";
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Heading,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Text,
+  Tooltip,
+  VStack,
+} from "@chakra-ui/react";
+import { FriendRequestWithUser } from "@/types/friendship";
 import { UserProfilePhotoSmall } from "../UserPage/UserProfilePhoto";
 import { useRouter } from "next/router";
+import { request } from "http";
 
 export const FriendNotification = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const { data: friendRequest, isLoading: friendRequestsIsLoading } =
     useGetOpenFriendRequests(session?.accessToken);
+  const acceptRequestMutation = useAcceptFriendRequestStateless(
+    session?.accessToken
+  );
+  const rejectRequestMutation = useRejectFriendRequest(session?.accessToken);
 
   const viewUser = (userId: number | string) => {
     router.push({ pathname: `/user-profile`, query: { myParam: userId } });
+  };
+
+  const handleAcceptRequest = (requestId: number | string) => {
+    try {
+      acceptRequestMutation.mutateAsync(requestId);
+    } catch {}
+  };
+
+  const handleRejectRequest = (requestId: number | string) => {
+    try {
+      rejectRequestMutation.mutateAsync(requestId);
+    } catch {}
   };
 
   if (friendRequestsIsLoading) {
@@ -27,6 +57,9 @@ export const FriendNotification = () => {
   return (
     <>
       {friendRequest.map((frObject: FriendRequestWithUser, key: number) => {
+        const friendString =
+          frObject.mutualFriends.length == 1 ? "Friend" : "Friends";
+
         return (
           <Box
             borderWidth="1px"
@@ -42,16 +75,54 @@ export const FriendNotification = () => {
               <Box pb={2} pl={1} onClick={() => viewUser(frObject.user.id)}>
                 <UserProfilePhotoSmall userId={frObject.user.id} />
               </Box>
-              <VStack>
+              <VStack spacing={0}>
                 <Box onClick={() => viewUser(frObject.user.id)}>
                   <Heading pt={1} size={"l"}>
                     {frObject.user.fullName}
                   </Heading>
                 </Box>
-                <Box onClick={() => viewUser(frObject.user.id)}>
-                  <Heading size={"l"}>{frObject.user.fullName}</Heading>
+                <Box>
+                  <Tooltip
+                    label={frObject.mutualFriends
+                      .map((friend) => friend.fullName)
+                      .join(", ")}
+                    fontSize="md"
+                  >
+                    <Text>
+                      {frObject.mutualFriends.length} Mutual {friendString}
+                    </Text>
+                  </Tooltip>
                 </Box>
               </VStack>
+              <Popover>
+                <PopoverTrigger>
+                  <Button bg={"#886E58"} textColor="white">
+                    Respond
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <PopoverBody>
+                    <Flex justifyContent="space-between">
+                      <Button
+                        colorScheme="whatsapp"
+                        onClick={() =>
+                          handleAcceptRequest(frObject.friendRequest.id)
+                        }
+                      >
+                        Accept Request
+                      </Button>
+                      <Button
+                        colorScheme="red"
+                        onClick={() =>
+                          handleRejectRequest(frObject.friendRequest.id)
+                        }
+                      >
+                        Reject Request
+                      </Button>
+                    </Flex>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
             </HStack>
           </Box>
         );

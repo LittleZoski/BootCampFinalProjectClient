@@ -48,11 +48,11 @@ function EventCard({ event }: { event: Event }) {
     userApplyForEvent.mutate(event.eventId);
   }
 
-  function onChatClick(e){
+  function onChatClick(e) {
     e.preventDefault();
     router.push(`/event/${event.eventId}/chat`);
   }
-  
+
   function onManage() {
     router.push({
       pathname: "/manageEvent",
@@ -101,7 +101,7 @@ function EventCard({ event }: { event: Event }) {
                       : data.fullName}
                   </Flex>
                   <Flex mb="1em" ml="2em">
-                    <UserProfilePhotoSmall userId={session.user.id} />
+                    <UserProfilePhotoSmall userId={data.id} />
                   </Flex>
                 </GridItem>
                 <GridItem pl="1em" area={"main"} color="white">
@@ -126,15 +126,17 @@ function EventCard({ event }: { event: Event }) {
                       </Button>
                     </Flex>
                     <Flex justify={"center"}>
-                      { DTOdata ? null: <Button
-                        colorScheme="milk"
-                        size="md"
-                        variant="outline"
-                        leftIcon={<AddIcon />}
-                        onClick={onApply}
-                      >
-                        Apply Event
-                      </Button>}
+                      {DTOdata ? null : (
+                        <Button
+                          colorScheme="milk"
+                          size="md"
+                          variant="outline"
+                          leftIcon={<AddIcon />}
+                          onClick={onApply}
+                        >
+                          Apply Event
+                        </Button>
+                      )}
                     </Flex>
                     <Flex justify={"center"}>
                       {DTOdata ? (
