@@ -1,4 +1,5 @@
 import { getAxiosBackend } from "@/api/api";
+import { Dog } from "@/types/dog";
 import { DogFriendRequest, DogFriendship } from "@/types/friendship";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { access } from "fs";
@@ -28,13 +29,14 @@ export const useGetPuppyPals = (accessToken: string, dogId: number) => {
   }
 };
 
-export const useGetMultiPuppyPals = (accessToken: string, dogs: Dog[]) => {
-  return useQuery<DogFriendship[]>({
-    queryKey: ["getPuppyPals", dogId],
-    queryFn: () => {
-      return backendAPI.get(`/puppypals/${dogId}`).then((response) => {
-        return sortFriends(response.data, dogId);
-      });
+export const useGetPuppyPalsMultiDog = (accessToken: string, dogs: Dog[]) => {
+  const backendAPI = getAxiosBackend(accessToken);
+
+  return useQuery<DogFriendship[][]>({
+    queryKey: ["getPuppyPalsMultiDog"],
+    queryFn: async () => {
+      const response = await backendAPI.post(`/puppypals/multidog`, dogs);
+      return response.data;
     },
     enabled: !!accessToken,
   });
@@ -51,6 +53,19 @@ export const useGetSentPuppyPalRequests = (
     queryFn: async () =>
       (await backendAPI.get<DogFriendRequest[]>(`/puppypals/sent/${dogId}`))
         .data,
+    enabled: !!accessToken,
+  });
+};
+
+export const useGetPPReqMultiDog = (accessToken: string, dogs: Dog[]) => {
+  const backendAPI = getAxiosBackend(accessToken);
+
+  return useQuery<DogFriendRequest[][]>({
+    queryKey: ["getPPReqMultiDog"],
+    queryFn: async () => {
+      const response = await backendAPI.post(`/puppypalreqs/multidog`, dogs);
+      return response.data;
+    },
     enabled: !!accessToken,
   });
 };
