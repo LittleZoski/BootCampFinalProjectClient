@@ -112,7 +112,7 @@ function Card({ card, token }: { card: Card, token: string }){
   );
 }
 
-export default function UserProfileCarousel({ card }: ProjectProps) {
+export default function UserProfileCarousel() {
   const { data: session } = useSession();
   // As we have used custom buttons, we need a reference variable to
   // change the state
