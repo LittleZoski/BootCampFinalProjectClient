@@ -107,7 +107,7 @@ function DogAvatarSmall({ dog }: { dog: Dog }) {
                 {dogProfile.bio}
               </GridItem>
               <GridItem rowSpan={5} colSpan={12}>
-                <PuppyPalButton />
+                <PuppyPalButton targetId={dog.id} />
               </GridItem>
             </Grid>
           </PopoverBody>
@@ -233,7 +233,7 @@ function DogCardSmall({ dog }: { dog: Dog }) {
                 {dogProfile.bio}
               </GridItem>
               <GridItem rowSpan={5} colSpan={12}>
-                <PuppyPalButton />
+                <PuppyPalButton targetId={dog.id} />
               </GridItem>
             </Grid>
           </PopoverBody>
