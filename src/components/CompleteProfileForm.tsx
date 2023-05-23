@@ -96,7 +96,7 @@ export default function CompleteProfileForm() {
       .min(2, "Last name must be at least two characters")
       .required("This field is required"),
     displayName: Yup.string().required("This field is required"),
-    about: Yup.string(),
+    about: Yup.string().required("This field is required"),
     dateOfBirth: Yup.string()
       .required("This field is required")
       .matches(dobRegex, "Please enter a valid date"),
@@ -116,7 +116,7 @@ export default function CompleteProfileForm() {
       const createUserResponse = await createUser.mutateAsync(userData);
       const profile: UserProfile = {
         id: createUserResponse.data.id,
-        aboutSection: about,
+        aboutSection: formValues.about,
         profilePhotoId: null,
         bannerPhotoId: null,
       };
@@ -246,14 +246,20 @@ export default function CompleteProfileForm() {
               </FormErrorMessage>
             </FormControl>
 
-            <FormControl>
+            <FormControl 
+              isRequired
+              isInvalid={formik.errors.about && formik.touched.about ? true : false}
+              >
               <FormLabel>About</FormLabel>
               <Textarea
                 placeholder="Tell us about yourself"
                 name="about"
-                onChange={handleAbout}
+                onChange={formik.handleChange}
+                value={formik.values.about}
               />
-            </FormControl>
+              <FormErrorMessage>
+                {formik.errors.about as string}
+              </FormErrorMessage>            </FormControl>
             <Button type="submit">Complete Profile</Button>
           </Stack>
         </Form>
