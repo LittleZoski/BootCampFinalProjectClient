@@ -5,7 +5,7 @@ import {
 } from "@/queries/post.queries";
 import { Post, UserLikedPost } from "@/types/post";
 import { User } from "@/types/user";
-import { filter, Spinner } from "@chakra-ui/react";
+import { Button, filter, HStack, Spinner, Text } from "@chakra-ui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FaPaw } from "react-icons/fa";
@@ -77,13 +77,13 @@ function LikeButton({
 
 	if (getLikedPosts.status === "success") {
 		return (
-			<button className="like-button" onClick={handleClick}>
-				<div className="container" id="like-icon">
+			<Button variant="ghost" onClick={handleClick}>
+				<HStack>
 					{liked ? <FaPaw color="#ffbcda" /> : <FaPaw />}
 
-					<span className="like">Like</span>
-				</div>
-			</button>
+					<Text>Like</Text>
+				</HStack>
+			</Button>
 		);
 	}
 }
