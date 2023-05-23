@@ -156,6 +156,7 @@ export const useGetDogProfilePhoto = (accessToken: string, dogId: number) => {
           return response.data;
         });
     },
+    retry: false,
     enabled: !!accessToken,
   });
 };
@@ -235,10 +236,13 @@ export function useGetDogProfileByDogIdv2(accessToken: string, dogId: number) {
 }
 export const useGetDogCircus = (accessToken: string) => {
   const backendAPI = getAxiosBackend(accessToken);
-  return useQuery<Dog[]>({
-    queryKey: ["getCurrentUserDogs"],
+  return useQuery<{
+  dog: Dog;
+  dogProfile: DogProfile;
+}[]>({
+    queryKey: ["dogCircus"],
     queryFn: () => {
-      return backendAPI.get(`/dogs/dogcircus"`).then((response) => {
+      return backendAPI.get(`/dogs/dogcircus`).then((response) => {
         return response.data;
       });
     },

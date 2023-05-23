@@ -11,17 +11,22 @@ import {
   Flex,
   Image,
   Spacer,
+  Spinner,
+  Avatar,
 } from "@chakra-ui/react";
 // react-icons package for the icons
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 // react-slick as Carousel Lib
 import Slider from "react-slick";
+import { useGetDogCircus, useGetDogProfilePhoto } from "@/queries/dog.queries";
+import { useSession } from "next-auth/react";
+import { DogProfile } from "@/types/dog-profile";
+import { Dog } from "@/types/dog";
 
 type Card = {
   name: string;
-  image: string;
+  imageId: number;
   bio: string;
-  color: string;
   href: string;
 };
 
@@ -42,7 +47,73 @@ const settings = {
   slidesToScroll: 1,
 };
 
+function Card({ card, token }: { card: Card, token: string }){
+  const { data, status } = useGetDogProfilePhoto(token, card.imageId);
+  if(status === "loading"){
+    return <Spinner />;
+  }
+
+  return (
+      <Container size="container.lg" height="372px" mb="21px">
+        <Flex
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+          height="inherit"
+        >
+          <Spacer />
+          <Stack w={"full"}>
+            <Box display="flex" justifyContent="center" mt="30px">
+              <Heading
+                fontSize={{ base: "3xl", md: "3.5xl", lg: "4xl" }}
+                color="white"
+              >
+                {card.name}
+              </Heading>
+            </Box>
+          </Stack>
+          <Box
+            rounded={21}
+            my={10}
+            mx={[0, 5]}
+            boxShadow={
+              "0px 1px 25px -5px rgb(0 0 0 / 57%), 0 10px 10px -5px rgb(0 0 0 / 45%)"
+            }
+          >
+            <Avatar
+              size="2xl"
+              verticalAlign="center"
+              rounded="18px"
+              src={`data:image/png;base64, ${data}`}
+              objectFit="cover"
+              maxH="165px"
+            />
+          </Box>
+          <Stack w={"90%"} maxW={"95%"} transform="translate(0, -50%)">
+            <Text fontSize={"12px"} color="white" textAlign={"center"}>
+              {card.bio}
+            </Text>
+          </Stack>
+          <Stack bottom="1%" transform="translate(0, -50%)">
+            <Text align="center" fontSize={"11px"} fontWeight="bold">
+              <Link
+                color={"white"}
+                href={card.href}
+                title={card.name}
+                textDecoration={"none"}
+              >
+                Check me out!
+              </Link>
+            </Text>
+          </Stack>
+          <Spacer />
+        </Flex>
+      </Container>
+  );
+}
+
 export default function UserProfileCarousel({ card }: ProjectProps) {
+  const { data: session } = useSession();
   // As we have used custom buttons, we need a reference variable to
   // change the state
   const [slider, setSlider] = React.useState<Slider | null>(null);
@@ -52,53 +123,18 @@ export default function UserProfileCarousel({ card }: ProjectProps) {
   const top = useBreakpointValue({ base: "50%", md: "50%" });
   const side = useBreakpointValue({ base: "1%", md: "21px" });
 
-  // This list contains all the data for the carousel as an example
-  // the data will be pulled dynamically from DB once the back-end is done
-  const cards: Card[] = [
-    {
-      name: "Tommy",
-      bio: "Tommy is crazy, of course sassy and cute! Just lookin for a good time!",
-      image: "/Assets/smalldog1.png",
-      href: "https://unsplash.com/s/photos/dog",
-      color: "#886E58",
-    },
+  let { data: circus, status: circusStatus } = useGetDogCircus(session?.accessToken);
 
-    {
-      name: "Fluffy",
-      bio: "Fluffy is looking for a playmate.  ",
-      image: "/Assets/smalldog2.png",
-      href: "https://unsplash.com/s/photos/dog",
-      color: "#886E58",
-    },
-    {
-      name: "Sparkles",
-      bio: "Sparkles is kind, loving and is looking for long walks on the beach and quality time!",
-      image: "/Assets/sparkles.jpg",
-      href: "https://unsplash.com/s/photos/dog",
-      color: "#886E58",
-    },
-    {
-      name: "Billy",
-      bio: "Billy is looking for just a couple meetups. Nothing serious.  ",
-      image: "/Assets/smalldog7.png",
-      href: "https://unsplash.com/s/photos/dog",
-      color: "#886E58",
-    },
-    {
-      name: "Fang",
-      bio: "Fang is crazy, of course sassy and cute! Just lookin for a good time!",
-      image: "/Assets/smalldog4.png",
-      href: "https://unsplash.com/s/photos/dog",
-      color: "#886E58",
-    },
-    {
-      name: "Bella",
-      bio: "Bella is playful, sassy and cute! Just lookin for a good time!",
-      image: "/Assets/smalldog5.png",
-      href: "https://unsplash.com/s/photos/dog",
-      color: "#886E58",
-    },
-  ];
+  if(circusStatus === "loading"){
+    return <Spinner />;
+  }
+
+  let maxCircus = Math.min(circus.length, 3);
+  let randomCircus = new Map<number, { dog: Dog; dogProfile: DogProfile }>();
+  while(randomCircus.size !== maxCircus){
+    let randInt = Math.round(Math.random() * (circus.length - 1));
+    randomCircus.set(randInt, circus[randInt]);
+  }
 
   return (
     <Flex justify="space-evenly" justifyContent="center" wrap="wrap" gap="9" bg={"#F5F2EA"}>
@@ -149,80 +185,21 @@ export default function UserProfileCarousel({ card }: ProjectProps) {
         </IconButton>
         {/* Slider setting */}
         <Slider {...settings} ref={(slider) => setSlider(slider)}>
-          {cards.map((card, index) => (
+          {Array.from(randomCircus.values()).map((item, index) => (
             <Box
               key={index}
               rounded="sm"
               borderRadius={21}
               overflow={"hidden"}
-              bg={card.color}
+              bg="#886E58"
               mb="21px"
             >
-              {/* customize the image, bio and link to profile */}
-              <Container size="container.lg" height="372px" mb="21px">
-                {/* pup name heading */}
-
-                <Flex
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  height="inherit"
-                >
-                  <Spacer />
-                  <Stack w={"full"}>
-                    <Box display="flex" justifyContent="center" mt="30px">
-                      <Heading
-                        fontSize={{ base: "3xl", md: "3.5xl", lg: "4xl" }}
-                        color="white"
-                      >
-                        {card.name}
-                      </Heading>
-                    </Box>
-                  </Stack>
-
-                  {/* pup pic */}
-                  <Box
-                    rounded={21}
-                    my={10}
-                    mx={[0, 5]}
-                    boxShadow={
-                      "0px 1px 25px -5px rgb(0 0 0 / 57%), 0 10px 10px -5px rgb(0 0 0 / 45%)"
-                    }
-                  >
-                    <Image
-                      verticalAlign="center"
-                      rounded="18px"
-                      src={card.image}
-                      alt={card.name}
-                      objectFit="cover"
-                      maxH="165px"
-                    />
-                  </Box>
-
-                  {/* puppy bio */}
-                  <Stack w={"90%"} maxW={"95%"} transform="translate(0, -50%)">
-                    {/* pup bio */}
-                    <Text fontSize={"12px"} color="white" textAlign={"center"}>
-                      {card.bio}
-                    </Text>
-                  </Stack>
-                  {/* <Spacer /> */}
-                  <Stack bottom="1%" transform="translate(0, -50%)">
-                    {/* link to pup profile */}
-                    <Text align="center" fontSize={"11px"} fontWeight="bold">
-                      <Link
-                        color={"white"}
-                        href={card.href}
-                        title={card.name}
-                        textDecoration={"none"}
-                      >
-                        Check me out!
-                      </Link>
-                    </Text>
-                  </Stack>
-                  <Spacer />
-                </Flex>
-              </Container>
+              <Card card={{ 
+                name: item.dog.name, 
+                imageId: item.dogProfile.profilePhotoId, 
+                bio: item.dogProfile.bio,
+                href: `/dog-profile?myParam=${item.dog?.id}`
+              }} token={session?.accessToken} />
             </Box>
           ))}
         </Slider>
