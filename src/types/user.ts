@@ -11,8 +11,8 @@ export type User = {
 
 export type UserProfile = {
   id?: number;
-  aboutSection: string;
-  profilePhotoId: string;
+  aboutSection?: string;
+  profilePhotoId?: string;
   bannerPhotoId?: string;
 };
 

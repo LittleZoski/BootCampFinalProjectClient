@@ -1,3 +1,8 @@
+import {
+  useUpdateUserProfile,
+  useUploadUserPhoto,
+  useUserProfile,
+} from "@/queries/user.queries";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -14,77 +19,48 @@ import {
   useDisclosure,
   Text,
 } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import { Session } from "next-auth";
 import { useState } from "react";
 import ImageUploadComponent from "../ImageHandling/ImageUploadComponent";
 import { UserProfile } from "@/types/user";
-import { Session } from "next-auth";
-import {
-  useUpdateUserProfile,
-  useUploadUserPhoto,
-} from "@/queries/user.queries";
 
 interface UserEditButtonProps {
-  userProfile: UserProfile;
   session: Session;
+  userProfile: UserProfile;
 }
 
 export const UserEditButton: React.FC<UserEditButtonProps> = ({
-  userProfile,
   session,
+  userProfile,
 }) => {
-  const {
-    isOpen: openModal,
-    onOpen: modal,
-    onClose: closeModal,
-  } = useDisclosure();
-
+  const userProfileQuery = useUserProfile(session.accessToken, userProfile.id);
+  const uploadPhotoMutation = useUploadUserPhoto(session.accessToken);
+  const updateUserProfile = useUpdateUserProfile(session.accessToken);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [missingFile, setMissingFile] = useState(false);
   const {
     isOpen: openPhotoUpload,
     onOpen: photoUpload,
     onClose: closePhotoUpload,
   } = useDisclosure();
-
-  const [selectedFile, setSelectedFile] = useState(null);
-  const uploadPhotoMutation = useUploadUserPhoto(session.accessToken);
-  const updateUserprofileMutation = useUpdateUserProfile(session.accessToken);
-  const queryClient = useQueryClient();
-  const [loading, setLoading] = useState(false);
-  const [missingFile, setMissingFile] = useState(false);
-
   const handleFileSelect = (event) => {
-    if (missingFile === true) {
-      setSelectedFile(event.target.files[0]);
-      setMissingFile(false);
-    } else {
-      setSelectedFile(event.target.files[0]);
-    }
+    setSelectedFile(event.target.files[0]);
   };
 
-  useEffect(() => {
-    if (updateUserprofileMutation.isSuccess) {
-      closePhotoUpload();
-      setSelectedFile(null);
-      queryClient.invalidateQueries();
-    }
-    setLoading(false);
-  }, [updateUserprofileMutation.isSuccess]);
-
-  async function handlePhotoUpload() {
+  async function handleUpload() {
     if (selectedFile != null) {
       setLoading(true);
-      const photoResponse = await uploadPhotoMutation.mutateAsync({
+      const profilePhoto = await uploadPhotoMutation.mutateAsync({
         file: selectedFile,
       });
-
-      const profilePhotoId = await photoResponse.data;
-
-      const newData: UserProfile = {
+      const profilePhotoId = await profilePhoto.data;
+      const newProfileData: UserProfile = {
+        id: userProfile.id,
         profilePhotoId: profilePhotoId,
         aboutSection: userProfile.aboutSection,
       };
-      await updateUserprofileMutation.mutateAsync(newData);
+      await updateUserProfile.mutateAsync(newProfileData);
     } else {
       setMissingFile(true);
       setLoading(false);
@@ -102,8 +78,7 @@ export const UserEditButton: React.FC<UserEditButtonProps> = ({
           Edit
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={photoUpload}>Upload Profile Picture</MenuItem>
-          <MenuItem onClick={modal}>Edit About Info</MenuItem>
+          <MenuItem onClick={photoUpload}>Change Profile Picture</MenuItem>
         </MenuList>
       </Menu>
 
@@ -129,7 +104,7 @@ export const UserEditButton: React.FC<UserEditButtonProps> = ({
               color={"white"}
               mr={3}
               isLoading={loading}
-              onClick={handlePhotoUpload}
+              onClick={handleUpload}
             >
               Save changes
             </Button>

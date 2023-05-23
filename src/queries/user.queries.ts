@@ -1,5 +1,5 @@
 import { getAxiosBackend } from "@/api/api";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { User, UserProfile } from "@/types/user";
 
 export const useCreateUser = (accessToken: string) => {
@@ -126,15 +126,26 @@ export function useGetUserById(accessToken: string, userId: number) {
 
 export function useUpdateUserProfile(accessToken: string) {
   const backendAPI = getAxiosBackend(accessToken);
-  return useMutation({
-    mutationFn: (userProfile: UserProfile) => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (userProfile: UserProfile) => {
       return backendAPI
         .put(`users/profile/${userProfile.id}`, userProfile)
-        .then((response) => {
-          response.data;
-        });
+        .then((response) => response.data);
     },
-  });
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["userProfile"]);
+      },
+    }
+  );
+}
+
+export function useUserProfile(accessToken: string, id: string | number) {
+  const backendAPI = getAxiosBackend(accessToken);
+  return useQuery(["userProfile", id], () =>
+    backendAPI.get(`users/profile/${id}`).then((res) => res.data)
+  );
 }
 
 export const useUploadUserPhoto = (accessToken: string) => {
