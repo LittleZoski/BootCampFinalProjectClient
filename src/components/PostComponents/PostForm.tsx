@@ -62,13 +62,13 @@ function CreatePostForm({ accessToken }) {
 	}
 
 	return (
-		<Box sx={{ maxWidth: 500 }} mx="auto">
+		<Box mx="auto">
 			<form>
 				<Textarea
 					onChange={(event) => {
 						handleChange(event);
 					}}
-					width={"400px"}
+					maxWidth={"400px"}
 					focusBorderColor="#886E58"
 					borderRadius={"20px"}
 					borderColor={"#978576"}
@@ -76,6 +76,7 @@ function CreatePostForm({ accessToken }) {
 					placeholder="What's on your mind..."
 					value={message}
 				/>
+
 				<Button
 					className="button-74"
 					onClick={handleSubmit}

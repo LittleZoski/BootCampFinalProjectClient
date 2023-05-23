@@ -69,14 +69,16 @@ function CommentButton({
 
 	return (
 		<>
-			<button className="comment-button" onClick={onOpen}>
-				<div className="container" id="comment-icon">
-					<span className="comment-alt">
-						<FaRegCommentAlt />
-					</span>
-					<span className="text">Comment</span>
-				</div>
-			</button>
+			<Button onClick={onOpen} backgroundColor={"#F5F2EA"}>
+				<Box backgroundColor={"#F5F2EA"}>
+					<HStack>
+						<Box>
+							<FaRegCommentAlt />
+						</Box>
+						<Box backgroundColor={"#F5F2EA"}>Comment</Box>
+					</HStack>
+				</Box>
+			</Button>
 			<Modal
 				isOpen={isOpen}
 				onClose={onClose}
@@ -115,16 +117,14 @@ function CommentButton({
 						>
 							{post.message}
 						</Text>
-						<HStack alignSelf={"center"} marginBottom={3}>
+						<HStack alignSelf={"center"} marginBottom={3} marginLeft={"20%"}>
 							<LikeButton post={post} user={user} accessToken={accessToken} />
-							<button className="comment-button" onClick={onOpen}>
-								<div className="container" id="comment-icon">
-									<span className="comment-alt">
-										<FaRegCommentAlt />
-									</span>
-									<span className="text">Comment</span>
-								</div>
-							</button>
+							<Button onClick={onOpen} variant={"ghost"}>
+								<HStack>
+									<FaRegCommentAlt />
+									<Text>Comment</Text>
+								</HStack>
+							</Button>
 						</HStack>
 					</Box>
 
