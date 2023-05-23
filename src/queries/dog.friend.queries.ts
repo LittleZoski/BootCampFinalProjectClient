@@ -1,6 +1,7 @@
 import { getAxiosBackend } from "@/api/api";
 import { DogFriendRequest, DogFriendship } from "@/types/friendship";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { access } from "fs";
 import { Dispatch, SetStateAction } from "react";
 
 export const useGetPuppyPals = (accessToken: string, dogId: number) => {
@@ -25,6 +26,18 @@ export const useGetPuppyPals = (accessToken: string, dogId: number) => {
     });
     return friendlist;
   }
+};
+
+export const useGetMultiPuppyPals = (accessToken: string, dogs: Dog[]) => {
+  return useQuery<DogFriendship[]>({
+    queryKey: ["getPuppyPals", dogId],
+    queryFn: () => {
+      return backendAPI.get(`/puppypals/${dogId}`).then((response) => {
+        return sortFriends(response.data, dogId);
+      });
+    },
+    enabled: !!accessToken,
+  });
 };
 
 export const useGetSentPuppyPalRequests = (

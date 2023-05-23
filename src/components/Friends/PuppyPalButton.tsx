@@ -31,7 +31,11 @@ import {
 import React, { useState } from "react";
 import { Dog } from "@/types/dog";
 
-export const PuppyPalButton = () => {
+interface PuppyPalButtonProps {
+  targetId: number;
+}
+
+export const PuppyPalButton: React.FC<PuppyPalButtonProps> = ({ targetId }) => {
   const { data: session } = useSession();
   const { isLoading: dogListIsLoading, data: dogList } = useGetCurrentUserDogs(
     session?.accessToken
@@ -45,17 +49,11 @@ export const PuppyPalButton = () => {
     return <PuppyPalNoDogs />;
   }
 
-  //IF USER HAS 1 DOG
   if (dogList.length == 1) {
-    // TODO(Trystan): Brian, do something.
-    return (
-      <PuppyPalSingleDog userDog={dogList.at(0)} targetDogId={dogList[0].id} />
-    );
+    return <PuppyPalSingleDog userDog={dogList.at(0)} targetDogId={targetId} />;
   }
 
-  //IF USER HAS MORE THAN ONE DOGS. MAYBE THESE NEED TO BE THEIR OWN COMPONENTS, IDK.
-  if (dogList.length < 1) {
-    const currentUserId = session?.user.id;
+  if (dogList.length > 1) {
   }
 };
 
