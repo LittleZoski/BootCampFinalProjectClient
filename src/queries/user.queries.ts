@@ -94,7 +94,10 @@ export const useGetUserPicByPicId = (accessToken: string, photoId: string) => {
   });
 };
 
-export const useGetUserPicByUserId = (accessToken: string, userId: string | number) => {
+export const useGetUserPicByUserId = (
+  accessToken: string,
+  userId: string | number
+) => {
   const backendAPI = getAxiosBackend(accessToken);
   return useQuery<string>({
     queryKey: ["getUserPicByUserId", userId],
@@ -120,3 +123,35 @@ export function useGetUserById(accessToken: string, userId: number) {
     enabled: !![accessToken, userId],
   });
 }
+
+export function useUpdateUserProfile(accessToken: string) {
+  const backendAPI = getAxiosBackend(accessToken);
+  return useMutation({
+    mutationFn: (userProfile: UserProfile) => {
+      return backendAPI
+        .put(`users/profile/${userProfile.id}`, userProfile)
+        .then((response) => {
+          response.data;
+        });
+    },
+  });
+}
+
+export const useUploadUserPhoto = (accessToken: string) => {
+  const backendAPI = getAxiosBackend(accessToken);
+
+  return useMutation(
+    ({ file }: { file: any }) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      return backendAPI.post(`/user/photos`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    },
+    {
+      onError: (error) => {
+        throw error;
+      },
+    }
+  );
+};

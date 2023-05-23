@@ -7,7 +7,6 @@ import { useGetUserInfo, useGetUserProfile } from "@/queries/user.queries";
 import { getAllEvent } from "@/queries/event.querues";
 import Loader from "@/components/CustomComponents/Loader";
 import { PostNotification } from "@/components/Notifications/PostNotification";
-// import FriendNotification from "@/components/Notifications/FriendNotification";
 
 export default function notifications() {
   const { data: session } = useSession();

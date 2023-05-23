@@ -13,20 +13,26 @@ import { UserProfilePhoto } from "./UserProfilePhoto";
 import { User, UserProfile } from "@/types/user";
 import { Friendship } from "@/types/friendship";
 import { FriendButtonUserSummary } from "../Friends/FriendButton";
+import { Session } from "next-auth";
+import { UserEditButton } from "./UserEditButton";
 
-type UserSideBarProps = {
+interface UserSideBarProps {
   user: User;
   dogList: Dog[];
   friendList: Friendship[];
   userProfile: UserProfile;
-};
+  session: Session;
+}
 
 const UserOverView: React.FC<UserSideBarProps> = ({
   user,
   dogList,
   friendList,
   userProfile,
+  session,
 }) => {
+  const currentUserId = session?.user.id;
+
   return (
     <>
       <Flex h={{ base: "auto" }} py={5}>
@@ -54,7 +60,11 @@ const UserOverView: React.FC<UserSideBarProps> = ({
           </SimpleGrid>
         </VStack>
         <Box ml={"auto"}>
-          <FriendButtonUserSummary friends={friendList} userId={user.id} />
+          {user.id == currentUserId ? (
+            <UserEditButton userProfile={userProfile} session={session} />
+          ) : (
+            <FriendButtonUserSummary friends={friendList} userId={user.id} />
+          )}
         </Box>
       </Flex>
     </>

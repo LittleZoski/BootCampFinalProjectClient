@@ -44,10 +44,6 @@ export const FriendButton = ({ friends }: { friends: Friendship[] }) => {
   const currentUserId = session?.user.id;
   const cardUserId = friends.at(0).primaryUserId;
 
-  if (cardUserId == currentUserId) {
-    return null;
-  }
-
   const sendRequestMutation = useSendFriendRequest(
     session?.accessToken,
     setRelationId
@@ -221,9 +217,6 @@ export const FriendButtonUserSummary: React.FC<FBUSProps> = ({
   const { data: session } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentUserId = session?.user.id;
-  if (userId == currentUserId) {
-    return null;
-  }
 
   const cardUserId = friends.at(0).primaryUserId;
   const sendRequestMutation = useSendFriendRequest(

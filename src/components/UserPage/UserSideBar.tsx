@@ -11,7 +11,6 @@ import PostForm from "../PostComponents/PostForm";
 import { User, UserProfile } from "@/types/user";
 import { Dog } from "@/types/dog";
 import UserTimeline from "./UserTimeline";
-import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 
 interface UserSideBarProps {
