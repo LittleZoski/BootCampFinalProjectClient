@@ -39,7 +39,7 @@ const UserSideBar: React.FC<UserSideBarProps> = ({
           w={colSpan}
           h={"full"}
           spacing={4}
-          px={4}
+          pr={4}
           alignItems="flex-start"
         >
           <Box
