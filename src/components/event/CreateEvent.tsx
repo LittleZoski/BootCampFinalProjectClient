@@ -89,7 +89,7 @@ export default function CreateEventForm() {
   });
 
   return (
-    <Flex>
+    <Flex maxH={"80%"}>
       <form
         style={{
           margin: "20px 20px 20px 20px ",

@@ -1,10 +1,7 @@
-import { useGetDogByOwnerId } from "@/queries/dog.queries";
 import { Dog } from "@/types/dog";
 import { User } from "@/types/user";
 import { Heading, SimpleGrid, GridItem, Flex } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import { DogAvatarSmall, DogCardSmall } from "../DogCard";
-import Loader from "../CustomComponents/Loader";
+import { DogCardSmall } from "../DogCard";
 
 type UserPetsProps = {
   user: User;

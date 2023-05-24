@@ -1,5 +1,5 @@
 import { getAxiosBackend } from "@/api/api";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { User, UserProfile } from "@/types/user";
 
 export const useCreateUser = (accessToken: string) => {
@@ -94,7 +94,10 @@ export const useGetUserPicByPicId = (accessToken: string, photoId: string) => {
   });
 };
 
-export const useGetUserPicByUserId = (accessToken: string, userId: string | number) => {
+export const useGetUserPicByUserId = (
+  accessToken: string,
+  userId: string | number
+) => {
   const backendAPI = getAxiosBackend(accessToken);
   return useQuery<string>({
     queryKey: ["getUserPicByUserId", userId],
@@ -120,3 +123,46 @@ export function useGetUserById(accessToken: string, userId: number) {
     enabled: !![accessToken, userId],
   });
 }
+
+export function useUpdateUserProfile(accessToken: string) {
+  const backendAPI = getAxiosBackend(accessToken);
+  const queryClient = useQueryClient();
+  return useMutation(
+    (userProfile: UserProfile) => {
+      return backendAPI
+        .put(`users/profile/${userProfile.id}`, userProfile)
+        .then((response) => response.data);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["userProfile"]);
+      },
+    }
+  );
+}
+
+export function useUserProfile(accessToken: string, id: string | number) {
+  const backendAPI = getAxiosBackend(accessToken);
+  return useQuery(["userProfile", id], () =>
+    backendAPI.get(`users/profile/${id}`).then((res) => res.data)
+  );
+}
+
+export const useUploadUserPhoto = (accessToken: string) => {
+  const backendAPI = getAxiosBackend(accessToken);
+
+  return useMutation(
+    ({ file }: { file: any }) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      return backendAPI.post(`/user/photos`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    },
+    {
+      onError: (error) => {
+        throw error;
+      },
+    }
+  );
+};

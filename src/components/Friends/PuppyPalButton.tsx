@@ -21,17 +21,24 @@ import { useRouter } from "next/router";
 import {
   useAcceptPuppyPalRequest,
   useCancelPuppyPalRequest,
+  useGetPPReqMultiDog,
   useGetPuppyPals,
+  useGetPuppyPalsMultiDog,
   useGetReceivedPuppyPalRequests,
   useGetSentPuppyPalRequests,
   useRejectPuppyPalRequest,
   useRemovePuppyPal,
   useSendPuppyPalRequest,
 } from "@/queries/dog.friend.queries";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dog } from "@/types/dog";
+import { Session } from "next-auth";
 
-export const PuppyPalButton = () => {
+interface PuppyPalButtonProps {
+  targetId: number;
+}
+
+export const PuppyPalButton: React.FC<PuppyPalButtonProps> = ({ targetId }) => {
   const { data: session } = useSession();
   const { isLoading: dogListIsLoading, data: dogList } = useGetCurrentUserDogs(
     session?.accessToken
@@ -45,18 +52,105 @@ export const PuppyPalButton = () => {
     return <PuppyPalNoDogs />;
   }
 
-  //IF USER HAS 1 DOG
   if (dogList.length == 1) {
-    // TODO(Trystan): Brian, do something.
     return (
-      <PuppyPalSingleDog userDog={dogList.at(0)} targetDogId={dogList[0].id} />
+      <PuppyPalSingleDog
+        userDog={dogList.at(0)}
+        targetDogId={targetId}
+        session={session}
+      />
     );
   }
 
-  //IF USER HAS MORE THAN ONE DOGS. MAYBE THESE NEED TO BE THEIR OWN COMPONENTS, IDK.
-  if (dogList.length < 1) {
-    const currentUserId = session?.user.id;
+  //TODO:FIX
+  if (dogList.length > 10) {
+    return (
+      <PuppyPalMultiDog
+        dogList={dogList}
+        session={session}
+        targetDogId={targetId}
+      />
+    );
   }
+};
+
+interface PuppyPalMultiDogProps {
+  dogList: Dog[];
+  session: Session;
+  targetDogId: number;
+}
+
+export const PuppyPalMultiDog: React.FC<PuppyPalMultiDogProps> = ({
+  dogList,
+  session,
+  targetDogId,
+}) => {
+  const [isFriends, setIsFriends] = useState<boolean[]>(
+    new Array(dogList.length).fill(false)
+  );
+  const [hasRequest, setHasRequest] = useState(
+    new Array(dogList.length).fill(false)
+  );
+  const [manageButton, setManageButton] = useState(false);
+  const { isLoading: friendsListsAreLoading, data: friendsLists } =
+    useGetPuppyPalsMultiDog(session?.accessToken, dogList);
+  const { isLoading: friendRequestsAreLoading, data: ppReqLists } =
+    useGetPPReqMultiDog(session?.accessToken, dogList);
+
+  useEffect(() => {
+    if (friendsLists) {
+      const tmpIsFriends = new Array(dogList.length).fill(false);
+      let foundFriend = false;
+
+      for (let i = 0; i < friendsLists.length; i++) {
+        for (let j = 0; j < friendsLists[i].length; j++) {
+          if (friendsLists[i][j].secondaryUserId == targetDogId) {
+            tmpIsFriends[i] = true;
+            foundFriend = true;
+          }
+        }
+      }
+
+      setIsFriends(tmpIsFriends);
+
+      if (foundFriend) {
+        setManageButton(true);
+      }
+    }
+  }, [friendsLists, dogList, targetDogId]);
+
+  useEffect(() => {
+    if (ppReqLists) {
+      const tmpHasRequest = new Array(dogList.length).fill(false);
+      let foundFriend = false;
+
+      for (let i = 0; i < ppReqLists.length; i++) {
+        for (let j = 0; j < ppReqLists[i].length; j++) {
+          if (ppReqLists[i][j].senderId == targetDogId) {
+            tmpHasRequest[i] = true;
+            foundFriend = true;
+          }
+        }
+      }
+
+      setIsFriends(tmpHasRequest);
+
+      if (foundFriend) {
+        setManageButton(true);
+      }
+    }
+  }, [ppReqLists, dogList, targetDogId]);
+
+  if (friendsListsAreLoading || friendRequestsAreLoading) {
+    return <Loader />;
+  }
+
+  return (
+    <>
+      {console.log(isFriends)}
+      {console.log(hasRequest)}
+    </>
+  );
 };
 
 export const PuppyPalNoDogs = () => {
@@ -67,25 +161,24 @@ export const PuppyPalNoDogs = () => {
   return <Button onClick={addDog}>Add a Dog to Add a PuppyPal</Button>;
 };
 
-type PuppyPalSingleDogProps = {
+interface PuppyPalSingleDogProps {
   userDog: Dog;
   targetDogId: number;
-};
+  session: Session;
+}
 
 export const PuppyPalSingleDog: React.FC<PuppyPalSingleDogProps> = ({
   userDog,
   targetDogId,
+  session,
 }) => {
   const [buttonType, setButtonType] = useState<ButtonType>();
   const [relationId, setRelationId] = useState<number>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data: session } = useSession();
   const { isLoading: puppyPalsIsLoading, data: puppyPals } = useGetPuppyPals(
     session?.accessToken,
     userDog.id
   );
-
-  targetDogId = 8;
 
   const { isLoading: isSentRequestLoading, data: sentRequests } =
     useGetSentPuppyPalRequests(session?.accessToken, userDog.id);

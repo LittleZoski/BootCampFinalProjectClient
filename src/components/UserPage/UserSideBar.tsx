@@ -5,13 +5,13 @@ import {
   useBreakpointValue,
   Box,
   Heading,
+  Container,
 } from "@chakra-ui/react";
 import UserPets from "./UserPets";
 import PostForm from "../PostComponents/PostForm";
 import { User, UserProfile } from "@/types/user";
 import { Dog } from "@/types/dog";
 import UserTimeline from "./UserTimeline";
-import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 
 interface UserSideBarProps {
@@ -26,6 +26,7 @@ const UserSideBar: React.FC<UserSideBarProps> = ({
   userProfile,
 }) => {
   const colSpan = useBreakpointValue({ base: "full", md: "75%" });
+  const flexTimeline = useBreakpointValue({ base: "flex-start", md: "center" });
   const { data: session } = useSession();
   return (
     <>
@@ -63,7 +64,7 @@ const UserSideBar: React.FC<UserSideBarProps> = ({
           h={"full"}
           p={10}
           spacing={10}
-          alignItems="flex-start"
+          alignItems={flexTimeline}
         >
           {session?.user.id === user.id ? (
             <PostForm accessToken={session?.accessToken} />

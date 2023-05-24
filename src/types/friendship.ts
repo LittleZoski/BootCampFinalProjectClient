@@ -32,4 +32,5 @@ export type FriendRequestWithUser = {
   friendRequest: FriendRequest;
   user: User;
   userProfile: UserProfile;
+  mutualFriends: User[];
 };

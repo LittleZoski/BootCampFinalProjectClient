@@ -10,10 +10,10 @@ export type User = {
 };
 
 export type UserProfile = {
-  id: number;
-  aboutSection: string;
-  profilePhotoId: string;
-  bannerPhotoId: string;
+  id?: number;
+  aboutSection?: string;
+  profilePhotoId?: string;
+  bannerPhotoId?: string;
 };
 
 export type UserWithDogs = {

@@ -7,10 +7,9 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Event } from "@/types/event";
 import { Flex } from "@chakra-ui/react";
 import Places from "./places";
-import { array } from "yup";
+
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionasResult = google.maps.DirectionsResult;

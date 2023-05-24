@@ -6,6 +6,10 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Stack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -15,27 +19,25 @@ import { useSession } from "next-auth/react";
 import Loader from "../CustomComponents/Loader";
 import { Challenge } from "@/types/challenges";
 import { useCreateChallenges } from "@/queries/challenges.queries";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 
-export default function CreateChallengeForm({event}:{event:Event}) {
+export default function CreateChallengeForm({ event }: { event: Event }) {
   const { data: session, status } = useSession();
   const createChallenge = useCreateChallenges(session?.accessToken);
+  
   if (status === "loading") {
     return <Loader />;
   }
 
   const initialValues: Challenge = {
-    
     name: "",
     description: "",
     price: 0,
     eventId: 0,
-    rewardImage: ""
+    rewardImage: "",
   };
-
-
-
 
   const ChallengeSchema = Yup.object().shape({
     name: Yup.string()
@@ -45,17 +47,12 @@ export default function CreateChallengeForm({event}:{event:Event}) {
       .min(2, "Location must be at least two characters")
       .required("This field is required"),
     eventId: Yup.number().required("This field is required"),
-    
   });
 
   const submitCreateCallenge = (formValues: Challenge) => {
-    formValues.eventId = event.eventId
-    createChallenge.mutate(formValues)
-
-    
+    formValues.eventId = event.eventId;
+    createChallenge.mutate(formValues);
   };
-
-
 
   const formik = useFormik({
     initialValues,
@@ -79,14 +76,9 @@ export default function CreateChallengeForm({event}:{event:Event}) {
         onSubmit={formik.handleSubmit}
       >
         <Stack spacing={4}>
-          
           <FormControl
             isRequired
-            isInvalid={
-              formik.errors.name && formik.touched.name
-                ? true
-                : false
-            }
+            isInvalid={formik.errors.name && formik.touched.name ? true : false}
           >
             <FormLabel>Challenge Name</FormLabel>
             <Input
@@ -117,10 +109,11 @@ export default function CreateChallengeForm({event}:{event:Event}) {
             <FormErrorMessage>{formik.errors.description}</FormErrorMessage>
           </FormControl>
 
-          
           <FormControl
             isRequired
-            isInvalid={formik.errors.price && formik.touched.price ? true : false}
+            isInvalid={
+              formik.errors.price && formik.touched.price ? true : false
+            }
           >
             <FormLabel>price</FormLabel>
             <Input
@@ -133,10 +126,13 @@ export default function CreateChallengeForm({event}:{event:Event}) {
             <FormErrorMessage>{formik.errors.price}</FormErrorMessage>
           </FormControl>
 
-
           <FormControl
             isRequired
-            isInvalid={formik.errors.rewardImage && formik.touched.rewardImage ? true : false}
+            isInvalid={
+              formik.errors.rewardImage && formik.touched.rewardImage
+                ? true
+                : false
+            }
           >
             <FormLabel>RewardImage</FormLabel>
             <Input
@@ -145,13 +141,24 @@ export default function CreateChallengeForm({event}:{event:Event}) {
               value={formik.values.rewardImage}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              
             />
             <FormErrorMessage>{formik.errors.rewardImage}</FormErrorMessage>
           </FormControl>
 
+          <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                Actions
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={()=>{formik.setFieldValue("rewardImage", "https://w7.pngwing.com/pngs/23/86/png-transparent-reward-cup-medal-desktop-wallpaper-trophies-thumbnail.png"   )}}>Trophy</MenuItem>
+                <MenuItem onClick={()=>{formik.setFieldValue("rewardImage", "https://cdn.shopify.com/s/files/1/0277/9601/3133/products/product-image-895532113_2048x2048.jpg?v=1589045021"   )}}>Crown</MenuItem>
+                
+              </MenuList>
+            </Menu>
+
           <Input type="hidden" name="eventId" value={formik.values.eventId} />
 
-          
           <Button type="submit">Create</Button>
         </Stack>
       </form>
