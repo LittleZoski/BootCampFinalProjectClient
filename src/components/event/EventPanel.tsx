@@ -91,10 +91,10 @@ function EventPanel() {
           </Flex>
         </Flex>
       ) : (
-        <Flex flexDirection="column">
-          <Flex backgroundColor={"#886E58"} justifyContent="space-evenly">
+        <Flex flexDirection="column" flexWrap={"wrap"} >
+          <Flex backgroundColor={"#886E58"} >
             <Box>
-              <Flex mx={"3em"} flexDirection="row" gap={"2em"}>
+              <Flex gap={"2em"}  flexWrap={"wrap"}  alignContent="center" justifyContent="center" >
                 <Flex pt="10%">
                   <Button onClick={onShowEventList}>Event List</Button>
                 </Flex>
@@ -103,6 +103,9 @@ function EventPanel() {
                 </Flex>
                 <Flex pt="10%">
                   <Button onClick={onShowManageEvent}>Manage Event</Button>
+                </Flex>
+                <Flex pt="10%">
+                  <Button onClick={onShowEventMap}>Event Map</Button>
                 </Flex>
               </Flex>
             </Box>

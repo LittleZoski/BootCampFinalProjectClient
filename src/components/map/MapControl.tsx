@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
 import Places from "./places";
 
 
@@ -26,10 +26,19 @@ function MapControl(props) {
     borderRadius: "0.5em",
   };
 
+  const smContainerStyle = {
+    width: "300px",
+    height: "400px",
+    borderRadius: "0.5em",
+  }
+
   const center = useMemo<LatLngLiteral>(() => ({ lat: 43, lng: -80 }), []);
   const [eventLocation, setEventLoaction] = useState<LatLngLiteral>();
   const mapRef = useRef<GoogleMap>();
-
+  const [isLargerThan950] = useMediaQuery("(min-width: 950px)", {
+    ssr: true,
+    fallback: false, // return false on the server, and re-evaluate on the client side
+  });
   const options = useMemo(
     () => ({
       disableDefaultUI: false,
@@ -49,7 +58,9 @@ function MapControl(props) {
   if (!isLoaded) return <div>Loading...</div>;
 
   return (
-    <Flex flexDirection={"column"} width="100%">
+
+    <Box>
+      {isLargerThan950 ? (<Flex flexDirection={"column"} width="100%">
       <Flex>
         <Places
           setLocation={(position, address) => {
@@ -67,7 +78,30 @@ function MapControl(props) {
       >
         <MarkerF position={eventLocation} />
       </GoogleMap></Flex>
-    </Flex>
+    </Flex>):(<Flex flexDirection={"column"} width="100%">
+      <Flex>
+        <Places
+          setLocation={(position, address) => {
+            console.log(position, address);
+            setEventLoaction(position);
+            props.handleCallback(address, position);
+          }}
+        />
+      </Flex>
+      <Flex><GoogleMap
+        zoom={12}
+        center={eventLocation}
+        mapContainerStyle={smContainerStyle}
+        options={options}
+      >
+        <MarkerF position={eventLocation} />
+      </GoogleMap></Flex>
+    </Flex>)}
+    </Box>
+
+
+
+    
   );
 }
 

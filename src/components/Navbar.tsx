@@ -50,7 +50,7 @@ export default function Simple() {
 
 	return (
 		<>
-			<Box bg={"#886E58"} textColor="white" px={4}>
+			<Box bg={"#886E58"} textColor="white" >
 				<Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
 					<IconButton
 						_hover={{
@@ -112,10 +112,12 @@ export default function Simple() {
 				</Flex>
 
 				{isOpen ? (
-					<Box pb={4} display={{ md: "none" }}>
+					<Box pb={4} display={{ md: "none" }} width="100vw">
 						<Stack as={"nav"} spacing={4}>
 							{Links.map((link, index) => (
-								<NavLink key={index}>{link}</NavLink>
+								<Link key={index} href={`/${link.toLowerCase()}`}>
+								{link}
+							</Link>
 							))}
 						</Stack>
 					</Box>

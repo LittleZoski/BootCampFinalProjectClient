@@ -4,6 +4,7 @@ import React, {  useEffect, useState } from 'react'
 import { Event } from "@/types/event";
 import { useSession } from 'next-auth/react';
 import { getUserById } from '@/queries/user.queries';
+import { Box, useMediaQuery } from '@chakra-ui/react';
 
 
 const libraries = ["places"] as any
@@ -20,6 +21,12 @@ function Map({event}:{event:Event}) {
     borderRadius:"0.5em"
   };
 
+  const smContainerStyle = {
+    width: '300px',
+    height: '300px',
+    borderRadius:"0.5em"
+  }
+
   const { data: session } = useSession();
   const { status, data } = getUserById(session?.accessToken, event.hostId);
   const [userLocation, setUserLocation] = useState<Location | null>(null);
@@ -32,7 +39,11 @@ function Map({event}:{event:Event}) {
     libraries: libraries
     
   })
-
+  
+  const [isLargerThan950] = useMediaQuery("(min-width: 950px)", {
+    ssr: true,
+    fallback: false, // return false on the server, and re-evaluate on the client side
+  });
  
 
   useEffect(() => {
@@ -58,7 +69,8 @@ function Map({event}:{event:Event}) {
   
   
   return (
-    <GoogleMap zoom={12} center={eventLocation} mapContainerStyle={containerStyle} ><MarkerF position={eventLocation} /></GoogleMap>
+    <Box>{isLargerThan950 ? (<GoogleMap zoom={12} center={eventLocation} mapContainerStyle={containerStyle} ><MarkerF position={eventLocation} /></GoogleMap>):(<GoogleMap zoom={12} center={eventLocation} mapContainerStyle={smContainerStyle} ><MarkerF position={eventLocation} /></GoogleMap>)}</Box>
+    
   )
 }
 

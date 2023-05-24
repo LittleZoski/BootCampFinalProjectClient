@@ -71,16 +71,13 @@ function EventManagementCard({ event }: { event: Event }) {
 
   return (
     <Box
-      w="80%"
       borderWidth="1px"
       borderRadius="1.5em"
-      overflow="hidden"
       bg={"#886E58"}
       mb="5"
       fontFamily={"font-family: Arial, sans-serif;"}
       fontSize="3xl"
       fontStyle={"italic"}
-      minWidth="400px"
       alignSelf={"center"}
     >
       <Tabs variant="soft-rounded" colorScheme="teal">
@@ -102,7 +99,7 @@ function EventManagementCard({ event }: { event: Event }) {
                 </Flex>
                 <Flex>{event.eventLocation}</Flex>
                 <Flex>{event.eventDescription}</Flex>
-                <Flex flexDirection={"row"} gap="18">
+                <Flex flexDirection={"row"} gap="18" flexWrap={"wrap"}>
                   <Button
                     colorScheme={"teal"}
                     overflow="hidden"

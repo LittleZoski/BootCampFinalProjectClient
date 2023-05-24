@@ -62,10 +62,11 @@ function EventCard({ event }: { event: Event }) {
 
   return (
     <Box
-      w="80%"
+      w="100%"
+      
       borderWidth="1px"
       borderRadius="lg"
-      overflow="hidden"
+      overflow="scroll"
       bg={"#886E58"}
       mb="5"
       fontFamily={"font-family: Arial, sans-serif;"}
