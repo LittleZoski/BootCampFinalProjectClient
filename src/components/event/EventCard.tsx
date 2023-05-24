@@ -1,19 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Box,
-  Badge,
-  Image,
-  Grid,
-  GridItem,
-  Flex,
-  Center,
-  Button,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Grid, GridItem, Flex, Button, Stack } from "@chakra-ui/react";
 import { Event } from "@/types/event";
 import { AddIcon, CheckCircleIcon, StarIcon } from "@chakra-ui/icons";
 import { useSession } from "next-auth/react";
@@ -24,9 +10,9 @@ import {
   userApplyToUninvitedEvent,
 } from "@/queries/event.querues";
 import { getUserEventDto } from "@/queries/userEventDTO.queries";
-import EventManagementCard from "./EventManagementCard";
 import { useRouter } from "next/router";
 import { UserProfilePhotoSmall } from "../UserPage/UserProfilePhoto";
+import Loader from "../CustomComponents/Loader";
 
 function EventCard({ event }: { event: Event }) {
   const router = useRouter();
@@ -48,16 +34,20 @@ function EventCard({ event }: { event: Event }) {
     userApplyForEvent.mutate(event.eventId);
   }
 
-  function onChatClick(e){
+  function onChatClick(e) {
     e.preventDefault();
     router.push(`/event/${event.eventId}/chat`);
   }
-  
+
   function onManage() {
     router.push({
       pathname: "/manageEvent",
       query: { myParam: JSON.stringify(event) },
     });
+  }
+
+  if (status == "loading") {
+    return <Loader />;
   }
 
   return (
@@ -101,7 +91,7 @@ function EventCard({ event }: { event: Event }) {
                       : data.fullName}
                   </Flex>
                   <Flex mb="1em" ml="2em">
-                    <UserProfilePhotoSmall userId={session.user.id} />
+                    <UserProfilePhotoSmall userId={data.id} />
                   </Flex>
                 </GridItem>
                 <GridItem pl="1em" area={"main"} color="white">
@@ -124,15 +114,17 @@ function EventCard({ event }: { event: Event }) {
                       </Button>
                     </Flex>
                     <Flex justify={"center"}>
-                      { DTOdata ? null: <Button
-                        colorScheme="milk"
-                        size="md"
-                        variant="outline"
-                        leftIcon={<AddIcon />}
-                        onClick={onApply}
-                      >
-                        Apply Event
-                      </Button>}
+                      {DTOdata ? null : (
+                        <Button
+                          colorScheme="milk"
+                          size="md"
+                          variant="outline"
+                          leftIcon={<AddIcon />}
+                          onClick={onApply}
+                        >
+                          Apply Event
+                        </Button>
+                      )}
                     </Flex>
                     <Flex justify={"center"}>
                       {DTOdata ? (

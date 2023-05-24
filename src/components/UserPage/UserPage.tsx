@@ -68,6 +68,7 @@ function UserPage({ userId }: { userId: number }) {
           dogList={dogList}
           friendList={friendList}
           userProfile={userProfile}
+          session={session}
         />
         <UserShortcutBar
           user={userData}

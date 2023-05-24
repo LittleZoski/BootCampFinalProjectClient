@@ -234,6 +234,7 @@ export function useGetDogProfileByDogIdv2(accessToken: string, dogId: number) {
 
   return { dogProfileStatus, dogProfile };
 }
+
 export const useGetDogCircus = (accessToken: string) => {
   const backendAPI = getAxiosBackend(accessToken);
   return useQuery<{
