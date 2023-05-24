@@ -27,6 +27,19 @@ export function getEventById(accessToken: string, id: number){
   });
 }
 
+export function userAcceptEventInvite(accessToken: string){
+    const backendAPI = getAxiosBackend(accessToken)
+    const queryClient = useQueryClient()
+    return useMutation({mutationFn:(eventId: number)=>{
+        return backendAPI.put<Event>(`/event/invitedEvent/${eventId}`).then((res)=>res.data)
+    },
+
+    onSuccess:(data)=>{
+        queryClient.invalidateQueries()
+    }
+})
+}
+    
 export function getAllEvent(accessToken: string) {
   const backendAPI = getAxiosBackend(accessToken);
   const { status, data } = useQuery({
@@ -40,16 +53,7 @@ export function getAllEvent(accessToken: string) {
   return { status, data };
 }
 
-export function userAcceptEventInvite(accessToken: string) {
-  const backendAPI = getAxiosBackend(accessToken);
-  return useMutation({
-    mutationFn: (eventId: number) => {
-      return backendAPI
-        .put<Event>(`/event/invitedEvent/${eventId}`)
-        .then((res) => res.data);
-    },
-  });
-}
+
 
 export function hostInviteToEvent(accessToken: string) {
   const backendAPI = getAxiosBackend(accessToken);
@@ -67,16 +71,17 @@ export function hostInviteToEvent(accessToken: string) {
   });
 }
 
-export function userApplyToUninvitedEvent(accessToken: string) {
-  const backendAPI = getAxiosBackend(accessToken);
-  return useMutation({
-    mutationFn: (eventId: number) => {
-      return backendAPI
-        .put<Event>(`/event/applyToEvent/${eventId}`)
-        .then((res) => res.data);
+export function userApplyToUninvitedEvent(accessToken: string){
+    const backendAPI = getAxiosBackend(accessToken)
+    const queryClient = useQueryClient()
+    return useMutation({mutationFn:(eventId: number)=>{
+        return backendAPI.put<Event>(`/event/applyToEvent/${eventId}`).then((res)=>res.data)
     },
-  });
-}
+    onSuccess:(data)=>{
+        queryClient.invalidateQueries()
+    }
+})
+}  
 
 export function hostAcceptUserApplication(accessToken: string) {
   const backendAPI = getAxiosBackend(accessToken);
@@ -156,6 +161,6 @@ export function useGetAllDogsInEvent(accessToken: string, eventId: number) {
     },
     // make the query wait for accesstoken, !! is a short hand. !!accessToken turn it into a boolean
     enabled: !!accessToken,
-  });
-  return { status, data };
+    });
+    return { status, data };
 }

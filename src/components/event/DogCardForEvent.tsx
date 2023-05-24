@@ -62,6 +62,7 @@ function DogCardForEvent({ userId }: { userId: number }) {
                 placement="right"
                 onClose={onClose}
                 finalFocusRef={btnRef}
+                size="sm"
               >
                 <DrawerOverlay />
                 <DrawerContent>

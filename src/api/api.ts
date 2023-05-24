@@ -22,7 +22,7 @@ export const geoCodingApi:AxiosInstance =axios.create({
 export const openAiApi: AxiosInstance = axios.create({
   baseURL: "https://api.openai.com",
   headers:{
-    Authorization: 'Bearer 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',
+    Authorization: 'Bearer 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',
     'Content-Type': 'application/json'
   }
 })
