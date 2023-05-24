@@ -27,7 +27,7 @@ function BreedInfo({ dog, accessToken }: { dog: Dog; accessToken: string }) {
 					}
 				>
 					<Heading color={"#886E58"} fontSize={"xl"}>
-						{breedInfo.name.charAt(0).toUpperCase() + breedInfo.name.slice(1)}s
+						{breedInfo.name.charAt(0).toUpperCase() + breedInfo.name.slice(1)}
 					</Heading>
 					{breedInfo.breed_group != null && breedInfo.breed_group != "" ? (
 						<Text>Breed group: {breedInfo.breed_group}</Text>

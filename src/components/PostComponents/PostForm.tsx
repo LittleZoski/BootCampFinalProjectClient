@@ -185,7 +185,7 @@ function CreatePostForm({ accessToken }) {
           onChange={(event) => {
             handleChange(event);
           }}
-          width={"400px"}
+          maxWidth={"400px"}
           focusBorderColor="#886E58"
           borderRadius={"20px"}
           borderColor={"#978576"}

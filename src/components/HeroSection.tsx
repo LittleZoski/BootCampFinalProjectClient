@@ -57,13 +57,6 @@ export default function HeroSection() {
       <Flex flex={1}>
         <Center>
           <Carousel
-            card={{
-              name: "",
-              image: "",
-              bio: "",
-              color: "",
-              href: "",
-            }}
           />
         </Center>
       </Flex>
