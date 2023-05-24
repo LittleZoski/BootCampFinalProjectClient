@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Center,
   Flex,
@@ -54,12 +55,12 @@ export default function HeroSection() {
           </Stack>
         </Stack>
       </Flex>
-      <Flex flex={1}>
-        <Center>
-          <Carousel
-          />
-        </Center>
-      </Flex>
+      <Flex flex={1} justify="center" align="center">
+  <Box width="100%">
+    <Carousel
+    />
+  </Box>
+</Flex>
     </Stack>
   );
 }
