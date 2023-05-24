@@ -89,6 +89,7 @@ export const useGetUserPicByPicId = (accessToken: string, photoId: string) => {
           return response.data;
         });
     },
+    retry: false,
     enabled: !!accessToken,
   });
 };
@@ -102,6 +103,7 @@ export const useGetUserPicByUserId = (accessToken: string, userId: string | numb
         return response.data;
       });
     },
+    retry: false,
     enabled: !!accessToken,
   });
 };

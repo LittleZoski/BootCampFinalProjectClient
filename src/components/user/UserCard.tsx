@@ -3,6 +3,7 @@ import { User } from "@/types/user";
 import { Avatar, Button, Flex } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
+import { UserProfilePhotoSmall } from "../UserPage/UserProfilePhoto";
 
 function UserCard({eventId, user}: { eventId:number, user: User}) {
 
@@ -26,7 +27,7 @@ function UserCard({eventId, user}: { eventId:number, user: User}) {
       justifyContent={"space-between"}
     >
       <Flex >
-        <Avatar src={user.profilePhotoUrl} />
+        <UserProfilePhotoSmall userId={session.user.id} />
       </Flex>
       <Flex>{user.fullName}</Flex>
       <Flex>{user.displayName}</Flex>

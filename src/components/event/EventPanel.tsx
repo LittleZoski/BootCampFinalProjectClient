@@ -21,71 +21,80 @@ function EventPanel() {
     setEventListRender(true);
     setCreateEventRender(false);
     setManageEventRender(false);
-    seteventMap(false)
+    seteventMap(false);
   };
 
   const onShowCreateEvent = () => {
     setEventListRender(false);
     setCreateEventRender(true);
     setManageEventRender(false);
-    seteventMap(false)
+    seteventMap(false);
   };
 
   const onShowManageEvent = () => {
     setEventListRender(false);
     setCreateEventRender(false);
     setManageEventRender(true);
-    seteventMap(false)
+    seteventMap(false);
   };
 
   const onShowEventMap = () => {
     setEventListRender(false);
     setCreateEventRender(false);
     setManageEventRender(false);
-    seteventMap(true)
+    seteventMap(true);
   };
 
   return (
-    <Box >
+    <Box>
       {isLargerThan950 ? (
-        <Flex flexDirection="row" >
-          <Flex backgroundColor={"#886E58"} minHeight="100vh" >
+        <Flex flexDirection="row">
+          <Flex backgroundColor={"#886E58"} minHeight="100vh">
             <Box>
-              <Flex mx={"3em"} alignItems={"center"} flexDirection="column">
-                <Flex pt="50%">
-                  <Heading>Menu</Heading>
-                </Flex>
-                <Flex pt="50%">
-                  <Button onClick={onShowEventList}>Event List</Button>
-                </Flex>
-                <Flex pt="50%">
-                  <Button onClick={onShowCreateEvent}>Create Event</Button>
-                </Flex>
-                <Flex pt="50%">
-                  <Button onClick={onShowManageEvent}>Manage Event</Button>
-                </Flex>
-                <Flex pt="50%">
-                  <Button onClick={onShowEventMap}>Event Map</Button>
-                </Flex>
+              <Flex backgroundColor={"#886E58"} minHeight="100vh">
+                <Box>
+                  <Flex mx={"1em"} alignItems={"center"} flexDirection="column">
+                    <Flex pt="40%">
+                      <Heading>Menu</Heading>
+                    </Flex>
+                    <Flex pt="40%">
+                      <Button w="200px" h="50px" onClick={onShowEventList}>
+                        Event List
+                      </Button>
+                    </Flex>
+                    <Flex pt="40%">
+                      <Button w="200px" h="50px" onClick={onShowCreateEvent}>
+                        Create Event
+                      </Button>
+                    </Flex>
+                    <Flex pt="40%">
+                      <Button w="200px" h="50px" onClick={onShowManageEvent}>
+                        Manage Event
+                      </Button>
+                    </Flex>
+                    <Flex pt="40%">
+                      <Button w="200px" h="50px" onClick={onShowEventMap}>
+                        Event Map
+                      </Button>
+                    </Flex>
+                  </Flex>
+                </Box>
               </Flex>
             </Box>
           </Flex>
-         
-          <Flex mx={"10%"} >
+
+          <Flex mx={"10%"}>
             {eventListHasRender && <EventList />}
             {createEventRender && <CreateEvent />}
             {manageEventRender && <ManageEvent />}
-            {eventMap && <EventMap />}  
+            {eventMap && <EventMap />}
           </Flex>
-
-         
         </Flex>
       ) : (
         <Flex flexDirection="column">
-          <Flex backgroundColor={"#886E58"} justifyContent="space-evenly" >
+          <Flex backgroundColor={"#886E58"} justifyContent="space-evenly">
             <Box>
-              <Flex mx={"3em"} flexDirection="row" gap={"2em"} >
-                
+              <Flex mx={"3em"} flexDirection="row" gap={"2em"}>
                 <Flex pt="10%">
                   <Button onClick={onShowEventList}>Event List</Button>
                 </Flex>

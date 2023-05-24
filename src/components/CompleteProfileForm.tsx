@@ -41,7 +41,6 @@ export default function CompleteProfileForm() {
 
   const handleAbout = (event) => {
     setAbout(event.target.value);
-    console.log(about);
   };
 
   function updatePhoneNumber(formik, e) {
@@ -97,7 +96,7 @@ export default function CompleteProfileForm() {
       .min(2, "Last name must be at least two characters")
       .required("This field is required"),
     displayName: Yup.string().required("This field is required"),
-    about: Yup.string(),
+    about: Yup.string().required("This field is required"),
     dateOfBirth: Yup.string()
       .required("This field is required")
       .matches(dobRegex, "Please enter a valid date"),
@@ -111,18 +110,16 @@ export default function CompleteProfileForm() {
       phoneNumber: formValues.phoneNumber,
       email: session.user.email,
       date_of_birth: formValues.dateOfBirth,
-      profilePhotoUrl: session.user.image,
     };
 
     try {
       const createUserResponse = await createUser.mutateAsync(userData);
       const profile: UserProfile = {
         id: createUserResponse.data.id,
-        aboutSection: about,
+        aboutSection: formValues.about,
         profilePhotoId: null,
         bannerPhotoId: null,
       };
-      console.log(profile);
       await createProfile.mutateAsync(profile);
     } catch (e) {
       return;
@@ -173,7 +170,9 @@ export default function CompleteProfileForm() {
                 onBlur={formik.handleBlur}
                 value={formik.values.lastName}
               />
-              <FormErrorMessage>{formik.errors.lastName as string}</FormErrorMessage>
+              <FormErrorMessage>
+                {formik.errors.lastName as string}
+              </FormErrorMessage>
             </FormControl>
             <FormControl
               isRequired
@@ -196,7 +195,9 @@ export default function CompleteProfileForm() {
                   Enter your name as you'd like it displayed on your profile.
                 </FormHelperText>
               ) : null}
-              <FormErrorMessage>{formik.errors.displayName as string}</FormErrorMessage>
+              <FormErrorMessage>
+                {formik.errors.displayName as string}
+              </FormErrorMessage>
             </FormControl>
             <FormControl
               isRequired
@@ -214,7 +215,9 @@ export default function CompleteProfileForm() {
                 onBlur={formik.handleBlur}
                 value={formik.values.dateOfBirth}
               />
-              <FormErrorMessage>{formik.errors.dateOfBirth as string}</FormErrorMessage>
+              <FormErrorMessage>
+                {formik.errors.dateOfBirth as string}
+              </FormErrorMessage>
             </FormControl>
             <FormControl
               isRequired
@@ -238,17 +241,25 @@ export default function CompleteProfileForm() {
                   value={formik.values.phoneNumber}
                 ></Input>
               </InputGroup>
-              <FormErrorMessage>{formik.errors.phoneNumber as string}</FormErrorMessage>
+              <FormErrorMessage>
+                {formik.errors.phoneNumber as string}
+              </FormErrorMessage>
             </FormControl>
 
-            <FormControl>
+            <FormControl 
+              isRequired
+              isInvalid={formik.errors.about && formik.touched.about ? true : false}
+              >
               <FormLabel>About</FormLabel>
               <Textarea
                 placeholder="Tell us about yourself"
                 name="about"
-                onChange={handleAbout}
+                onChange={formik.handleChange}
+                value={formik.values.about}
               />
-            </FormControl>
+              <FormErrorMessage>
+                {formik.errors.about as string}
+              </FormErrorMessage>            </FormControl>
             <Button type="submit">Complete Profile</Button>
           </Stack>
         </Form>

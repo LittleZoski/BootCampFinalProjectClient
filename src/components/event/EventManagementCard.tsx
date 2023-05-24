@@ -32,6 +32,7 @@ import EventDogList from "./EventDogList";
 import DataAnalytic from "./DataAnalytic";
 import CreateChallengeForm from "../Challenges/CreateChallengesForm";
 import RewardPanel from "../Challenges/RewardPanel";
+import { UserProfilePhotoSmall } from "../UserPage/UserProfilePhoto";
 
 function EventManagementCard({ event }: { event: Event }) {
   const { data: session } = useSession();
@@ -44,8 +45,6 @@ function EventManagementCard({ event }: { event: Event }) {
 
   const hostAcceptApplication = hostAcceptUserApplication(session?.accessToken);
 
-  console.log(event.hostId, data, DTOListdata);
-
   const initialFocusRef = React.useRef();
 
   const onClickAccept = (event) => {
@@ -55,7 +54,6 @@ function EventManagementCard({ event }: { event: Event }) {
     let userId = Number(
       (event.target as HTMLElement).getAttribute("data-userId")
     );
-    console.log(eventId, userId);
     hostAcceptApplication.mutate({ eventId, userId });
   };
 
@@ -85,181 +83,183 @@ function EventManagementCard({ event }: { event: Event }) {
       minWidth="400px"
       alignSelf={"center"}
     >
-      <Tabs variant="soft-rounded" colorScheme="teal" >
+      <Tabs variant="soft-rounded" colorScheme="teal">
         <TabList ml={"0.5em"} mt={"0.5em"}>
           <Tab>Management</Tab>
           <Tab>Rewards</Tab>
           <Tab>Analytics</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <Box mx="1.5em" mt="2em" mb="2em">
-                <Flex flexDirection={"column"} gap="2">
-                  <Flex className="header" justifyContent={"center"}>
-                    <Map event={event} />
-                  </Flex>
-                  <Flex mt={"1em"}>{event.eventTitle}</Flex>
-                  <Flex>
-                    {event.date} {event.time}
-                  </Flex>
-                  <Flex>{event.eventLocation}</Flex>
-                  <Flex>{event.eventDescription}</Flex>
-                  <Flex flexDirection={"row"} gap="18">
-                    <Button
-                      colorScheme={"teal"}
-                      overflow="hidden"
-                      textOverflow={"ellipsis"}
-                    >
-                      Invite friends
-                    </Button>
-                    <EventDogList DTOListdata={DTOListdata} eventId={event.eventId}/>
-                    <Popover
-                      initialFocusRef={initialFocusRef}
-                      placement="bottom"
-                      closeOnBlur={false}
-                    >
-                      <PopoverTrigger>
-                        <Button
-                          colorScheme={"teal"}
-                          overflow="hidden"
-                          textOverflow={"ellipsis"}
-                        >
-                          Update Event
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        color="white"
-                        bg="blue.800"
-                        borderColor="blue.800"
-                        boxSize={"500 500"}
-                      >
-                        <PopoverArrow />
-                        <PopoverCloseButton />
-                        <PopoverBody>
-                          <UpdateEvent event_Id={event.eventId} />
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Popover>
-
-                    <Popover
-                      initialFocusRef={initialFocusRef}
-                      placement="bottom"
-                      closeOnBlur={false}
-                    >
-                      <PopoverTrigger>
-                        <Button
-                          colorScheme={"teal"}
-                          overflow="hidden"
-                          textOverflow={"ellipsis"}
-                        >
-                          Invite User
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        color="white"
-                        bg="blue.800"
-                        borderColor="blue.800"
-                        boxSize={"500 500"}
-                        fontSize="18"
-                      >
-                        <PopoverArrow />
-                        <PopoverCloseButton />
-                        <PopoverBody>
-                          <UserList eventId={event.eventId} />
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Popover>
-                    <Button
-                      colorScheme={"teal"}
-                      onClick={handleDelete}
-                      overflow="hidden"
-                      textOverflow={"ellipsis"}
-                    >
-                      Delete Event
-                    </Button>
-                    <Button
-                      colorScheme={"teal"}
-                      overflow="hidden"
-                      textOverflow={"ellipsis"}
-                    >
-                      Refresh
-                    </Button>
-                  </Flex>
-                  <Box>
-                    <Flex
-                      mt="1.5em"
-                      fontFamily={"sans-serif"}
-                      fontSize="33"
-                      justifyContent={"center"}
-                    >
-                      RSVP
-                    </Flex>
-                    <Flex
-                      flexDirection={"row"}
-                      gap="5"
-                      flexWrap={"wrap"}
-                      mt="2em"
-                      justifyContent={"center"}
-                    >
-                      {DTOListdata
-                        ? DTOListdata.map((DTO) => {
-                            return (
-                              <Flex
-                                flexDirection={"column"}
-                                backgroundColor="#C2C0C7"
-                                width="180px"
-                                height="190px"
-                                gap={"1.5"}
-                                borderRadius="18"
-                                fontFamily={"sans-serif"}
-                                fontSize="16"
-                              >
-                                <Flex>
-                                  <Avatar src={DTO.profilePhotoUrl} />
-                                </Flex>
-                                <Flex ml={"2"}>{DTO.userName}</Flex>
-                                <Flex ml={"2"}>
-                                  {DTO.eventAccessLevel === "EVENT_HOST"
-                                    ? "Host"
-                                    : "Guest"}
-                                </Flex>
-                                <Flex ml={"2"} color="teal">
-                                  {DTO.eventInvitedStatus} {DTO.goingStatus}
-                                </Flex>
-                                <Flex>
-                                  <DogCardForEvent userId={DTO.userId} />
-                                </Flex>
-
-                                <Flex alignSelf={"center"}>
-                                  {DTO.eventInvitedStatus.toLowerCase() ===
-                                  "applied" ? (
-                                    <Button
-                                      colorScheme={"teal"}
-                                      data-eventId={DTO.eventId}
-                                      data-userId={DTO.userId}
-                                      onClick={(event) => onClickAccept(event)}
-                                    >
-                                      Accept
-                                    </Button>
-                                  ) : null}
-                                </Flex>
-                              </Flex>
-                            );
-                          })
-                        : null}
-                    </Flex>
-                  </Box>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <Box mx="1.5em" mt="2em" mb="2em">
+              <Flex flexDirection={"column"} gap="2">
+                <Flex className="header" justifyContent={"center"}>
+                  <Map event={event} />
                 </Flex>
-              </Box>
-            </TabPanel>
-            <TabPanel>
-              <RewardPanel event={event} />
-            </TabPanel>
-            <TabPanel>
-              <DataAnalytic eventId={event.eventId} />
-            </TabPanel>
-          </TabPanels>
-        
+                <Flex mt={"1em"}>{event.eventTitle}</Flex>
+                <Flex>
+                  {event.date} {event.time}
+                </Flex>
+                <Flex>{event.eventLocation}</Flex>
+                <Flex>{event.eventDescription}</Flex>
+                <Flex flexDirection={"row"} gap="18">
+                  <Button
+                    colorScheme={"teal"}
+                    overflow="hidden"
+                    textOverflow={"ellipsis"}
+                  >
+                    Invite friends
+                  </Button>
+                  <EventDogList
+                    DTOListdata={DTOListdata}
+                    eventId={event.eventId}
+                  />
+                  <Popover
+                    initialFocusRef={initialFocusRef}
+                    placement="bottom"
+                    closeOnBlur={false}
+                  >
+                    <PopoverTrigger>
+                      <Button
+                        colorScheme={"teal"}
+                        overflow="hidden"
+                        textOverflow={"ellipsis"}
+                      >
+                        Update Event
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      color="white"
+                      bg="blue.800"
+                      borderColor="blue.800"
+                      boxSize={"500 500"}
+                    >
+                      <PopoverArrow />
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        <UpdateEvent event_Id={event.eventId} />
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Popover>
+
+                  <Popover
+                    initialFocusRef={initialFocusRef}
+                    placement="bottom"
+                    closeOnBlur={false}
+                  >
+                    <PopoverTrigger>
+                      <Button
+                        colorScheme={"teal"}
+                        overflow="hidden"
+                        textOverflow={"ellipsis"}
+                      >
+                        Invite User
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      color="white"
+                      bg="blue.800"
+                      borderColor="blue.800"
+                      boxSize={"500 500"}
+                      fontSize="18"
+                    >
+                      <PopoverArrow />
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        <UserList eventId={event.eventId} />
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    colorScheme={"teal"}
+                    onClick={handleDelete}
+                    overflow="hidden"
+                    textOverflow={"ellipsis"}
+                  >
+                    Delete Event
+                  </Button>
+                  <Button
+                    colorScheme={"teal"}
+                    overflow="hidden"
+                    textOverflow={"ellipsis"}
+                  >
+                    Refresh
+                  </Button>
+                </Flex>
+                <Box>
+                  <Flex
+                    mt="1.5em"
+                    fontFamily={"sans-serif"}
+                    fontSize="33"
+                    justifyContent={"center"}
+                  >
+                    RSVP
+                  </Flex>
+                  <Flex
+                    flexDirection={"row"}
+                    gap="5"
+                    flexWrap={"wrap"}
+                    mt="2em"
+                    justifyContent={"center"}
+                  >
+                    {DTOListdata
+                      ? DTOListdata.map((DTO) => {
+                          return (
+                            <Flex
+                              flexDirection={"column"}
+                              backgroundColor="#C2C0C7"
+                              width="180px"
+                              height="190px"
+                              gap={"1.5"}
+                              borderRadius="18"
+                              fontFamily={"sans-serif"}
+                              fontSize="16"
+                            >
+                              <Flex>
+                                <UserProfilePhotoSmall userId={DTO.id} />
+                              </Flex>
+                              <Flex ml={"2"}>{DTO.userName}</Flex>
+                              <Flex ml={"2"}>
+                                {DTO.eventAccessLevel === "EVENT_HOST"
+                                  ? "Host"
+                                  : "Guest"}
+                              </Flex>
+                              <Flex ml={"2"} color="teal">
+                                {DTO.eventInvitedStatus} {DTO.goingStatus}
+                              </Flex>
+                              <Flex>
+                                <DogCardForEvent userId={DTO.userId} />
+                              </Flex>
+
+                              <Flex alignSelf={"center"}>
+                                {DTO.eventInvitedStatus.toLowerCase() ===
+                                "applied" ? (
+                                  <Button
+                                    colorScheme={"teal"}
+                                    data-eventId={DTO.eventId}
+                                    data-userId={DTO.userId}
+                                    onClick={(event) => onClickAccept(event)}
+                                  >
+                                    Accept
+                                  </Button>
+                                ) : null}
+                              </Flex>
+                            </Flex>
+                          );
+                        })
+                      : null}
+                  </Flex>
+                </Box>
+              </Flex>
+            </Box>
+          </TabPanel>
+          <TabPanel>
+            <RewardPanel event={event} />
+          </TabPanel>
+          <TabPanel>
+            <DataAnalytic eventId={event.eventId} />
+          </TabPanel>
+        </TabPanels>
       </Tabs>
     </Box>
   );

@@ -27,7 +27,6 @@ function places({ setLocation }: PlacesProps) {
   // const [selected, setSelected] = useState<string|null>(null)
 
   const handleSelect = async (e) => {
-    console.log(e.target.value);
     setValue(e.target.value, false);
     const results = await getGeocode({ address: e.target.value });
     const { lat, lng } = await getLatLng(results[0]);

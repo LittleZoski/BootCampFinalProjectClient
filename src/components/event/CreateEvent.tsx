@@ -75,18 +75,12 @@ export default function CreateEventForm() {
     } catch (e) {
       return;
     }
-    console.log(formValues)
-    formValues.eventId = eventId
+    formValues.eventId = eventId;
     router.push({
-      pathname:"/manageEvent",
-      query: {myParam: JSON.stringify(formValues)}
+      pathname: "/manageEvent",
+      query: { myParam: JSON.stringify(formValues) },
     });
-
-
-    
   };
-
-
 
   const formik = useFormik({
     initialValues,

@@ -1,7 +1,7 @@
 import { getAllEvent } from "@/queries/event.querues";
 import { useSession } from "next-auth/react";
 import React from "react";
-import EventCard from "../event/EventCard";
+import EventCard from "./EventCard";
 import EventNotification from "./EventNotification";
 
 function EventList2() {

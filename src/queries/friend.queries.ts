@@ -1,9 +1,16 @@
 import { getAxiosBackend } from "@/api/api";
-import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
-import { FriendRequest, Friendship } from "@/types/friendship";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  FriendRequest,
+  FriendRequestWithUser,
+  Friendship,
+} from "@/types/friendship";
 import { Dispatch, SetStateAction } from "react";
 
-export const useGetFriendList = (accessToken: string, userId: string | number) => {
+export const useGetFriendList = (
+  accessToken: string,
+  userId: string | number
+) => {
   const backendAPI = getAxiosBackend(accessToken);
   return useQuery<Friendship[]>({
     queryKey: ["getFriendList", userId],
@@ -14,17 +21,6 @@ export const useGetFriendList = (accessToken: string, userId: string | number) =
     },
     enabled: !!accessToken,
   });
-
-  function sortFriends(friendlist: Friendship[], userId: string | number) {
-    friendlist.forEach((friendship: Friendship) => {
-      if (friendship.primaryUserId != userId) {
-        const tmp = friendship.secondaryUserId;
-        friendship.secondaryUserId = friendship.primaryUserId;
-        friendship.primaryUserId = tmp;
-      }
-    });
-    return friendlist;
-  }
 };
 
 export const useGetSentFriendRequests = (accessToken: string) => {
@@ -45,6 +41,21 @@ export const useGetReceivedFriendRequests = (accessToken: string) => {
     queryKey: ["getReceivedFriendRequests"],
     queryFn: async () =>
       (await backendAPI.get<FriendRequest[]>(`/friendrequest/received`)).data,
+    enabled: !!accessToken,
+  });
+};
+
+export const useGetOpenFriendRequests = (accessToken: string) => {
+  const backendAPI = getAxiosBackend(accessToken);
+
+  return useQuery({
+    queryKey: ["getOpenFriendRequest"],
+    queryFn: async () =>
+      (
+        await backendAPI.get<FriendRequestWithUser[]>(
+          `friendrequest/received/full`
+        )
+      ).data,
     enabled: !!accessToken,
   });
 };
@@ -114,3 +125,14 @@ export const useRejectFriendRequest = (accessToken: string) => {
     backendAPI.delete<FriendRequest>(`/rejectfriendship/${requestId}`)
   );
 };
+
+function sortFriends(friendlist: Friendship[], userId: string | number) {
+  friendlist.forEach((friendship: Friendship) => {
+    if (friendship.primaryUserId != userId) {
+      const tmp = friendship.secondaryUserId;
+      friendship.secondaryUserId = friendship.primaryUserId;
+      friendship.primaryUserId = tmp;
+    }
+  });
+  return friendlist;
+}

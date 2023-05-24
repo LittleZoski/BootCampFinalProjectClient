@@ -1,13 +1,35 @@
 import React from "react";
 import { Box, Text, Flex, ChakraProvider, Center } from "@chakra-ui/react";
-import EventList2 from "@/components/Notifications/EventList2";
-import { FriendButton } from "@/components/Friends/FriendButton";
-import FriendNotification from "@/components/Notifications/FriendNotification";
-import { FriendCard } from "@/components/Friends/FriendPage";
+import EventNotify from "@/components/Notifications/EventNotify";
+import { FriendNotification } from "@/components/Notifications/FriendNotification";
+import { useSession } from "next-auth/react";
+import { useGetUserInfo, useGetUserProfile } from "@/queries/user.queries";
+import { getAllEvent } from "@/queries/event.querues";
+import Loader from "@/components/CustomComponents/Loader";
+import { PostNotification } from "@/components/Notifications/PostNotification";
+// import FriendNotification from "@/components/Notifications/FriendNotification";
 
 export default function notifications() {
+  const { data: session } = useSession();
+
+  const { isLoading: userIsLoading, data: userData } = useGetUserInfo(
+    session?.accessToken,
+    session?.user.id
+  );
+  const { data: events, status: eventStatus } = getAllEvent(
+    session?.accessToken
+  );
+  const { isLoading: profileIsLoading, data: userProfile } = useGetUserProfile(
+    session?.accessToken,
+    session?.user.id
+  );
+
+  if (userIsLoading || profileIsLoading || eventStatus === "loading") {
+    return <Loader />;
+  }
+
   return (
-    <ChakraProvider >
+    <ChakraProvider>
       <Flex
         display={"column"}
         maxBlockSize={"600px"}
@@ -20,10 +42,10 @@ export default function notifications() {
           justify="space-evenly"
           justifyContent="center"
           wrap="wrap"
-          gap="9"
+          // gap="9"
         >
           <Box
-            w="360px"
+            w="460px"
             overflowY="auto"
             maxHeight="450px"
             borderRadius={10}
@@ -40,14 +62,19 @@ export default function notifications() {
                 Events
               </Text>
             </Center>
-            <Box h="400px" borderBottom="1px" width="97%">
+            <Box h="400px" width="97%">
               {/* import event list here */}
-              <EventList2 />
+              <EventNotify
+                user={userData}
+                event={events}
+                session={session}
+                userProfile={userProfile}
+              />
             </Box>
           </Box>
 
           <Box
-            w="360px"
+            w="460px"
             rounded="sm"
             borderRadius={10}
             my={5}
@@ -64,10 +91,42 @@ export default function notifications() {
                 Friends
               </Text>
             </Center>
-            <Box h="400px" borderBottom="1px" width="100%">
+            <Box h="400px" width="100%">
               {/* import friend requests here */}
-              Friend list goes here
-              <FriendNotification />
+              {/* <FriendNotification /> */}
+            </Box>
+          </Box>
+
+          {/* posts */}
+          <Box
+            w="460px"
+            overflowY="auto"
+            // maxHeight="450px"
+            borderRadius={10}
+            my={5}
+            mx={[0, 5]}
+            bg="#886E58"
+            boxShadow={
+              "0px 1px 25px -5px rgb(0 0 0 / 57%), 0 10px 10px -5px rgb(0 0 0 / 45%)"
+            }
+          >
+            <Center mt="20px">
+              <Text
+                mb={"10px"}
+                fontSize={"xl"}
+                fontWeight="medium"
+                color={"#ffffff"}
+              >
+                Posts
+              </Text>
+            </Center>
+            <Box h="400px" width="97%">
+              {/* import posts list here */}
+              <PostNotification
+                user={userData}
+                userProfile={userProfile}
+                session={session}
+              />
             </Box>
           </Box>
         </Flex>

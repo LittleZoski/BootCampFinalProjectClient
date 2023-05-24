@@ -19,7 +19,6 @@ function DogProfilePhoto({
 			<Avatar
 				size={"2xl"}
 				src={`data:image/png;base64, ${data}`}
-				title="Ziggy"
 				css={{
 					border: "5px solid #886E58",
 					marginTop: "5px",

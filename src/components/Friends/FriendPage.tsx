@@ -14,7 +14,6 @@ import {
   SimpleGrid,
   Spacer,
   Text,
-  useBreakpointValue,
   useMediaQuery,
 } from "@chakra-ui/react";
 import { useQueries } from "@tanstack/react-query";
@@ -112,6 +111,8 @@ const FriendCard = ({ userData }: { userData: User }) => {
   const { data: session } = useSession();
   const [isSmallerScreen] = useMediaQuery("(max-width: 768px)");
   const buttonWidth = isSmallerScreen ? "full" : "auto";
+  const buttonPT = isSmallerScreen ? "1" : "0";
+  const buttonPR = isSmallerScreen ? "0" : "1";
 
   const viewUser = () => {
     router.push({ pathname: `/user-profile`, query: { myParam: userData.id } });
@@ -142,7 +143,7 @@ const FriendCard = ({ userData }: { userData: User }) => {
       borderColor={"#886E58"}
       rounded={"lg"}
       shadow="lg"
-      bgColor={"lightsteelblue"}
+      backgroundColor={"transparent"}
     >
       <Flex direction={isSmallerScreen ? "column" : "row"} height="100%">
         <Box flex="1">
@@ -165,6 +166,8 @@ const FriendCard = ({ userData }: { userData: User }) => {
         <Box
           alignSelf={isSmallerScreen ? "stretch" : "center"}
           width={buttonWidth}
+          pt={buttonPT}
+          pr={buttonPR}
         >
           <FriendButton friends={friendList} />
         </Box>
@@ -185,13 +188,39 @@ const FriendsAndDogs = ({
   friendList,
   dogList,
 }: FriendsAndDogsProps) => {
-  const friend = friendList.length === 1 ? "Friend" : "Friends";
-  const dog = dogList.length === 1 ? "Dog" : "Dogs";
+  let friend: string;
+  let friendLen: number | string;
+  let dog: string;
+  let dogLen: number | string;
+
+  if (friendList.length === undefined) {
+    friend = "Friends";
+    friendLen = "0";
+  } else {
+    friend = friendList.length === 1 ? "Friend" : "Friends";
+    friendLen = friendList.length;
+  }
+
+  if (dogList === undefined) {
+    dog = "Dogs";
+    dogLen = "0";
+  } else {
+    dog = dogList.length === 1 ? "Dog" : "Dogs";
+    dogLen = dogList.length;
+  }
 
   if (isSmallerScreen) {
-    return <>`${dogList.length} ${dog}`</>;
+    return (
+      <>
+        {dogLen} {dog}
+      </>
+    );
   } else {
-    return <>`${friendList.length} ${friend} | ${dogList.length} ${dog}`</>;
+    return (
+      <>
+        {friendLen} {friend} | {dogLen} {dog}
+      </>
+    );
   }
 };
 

@@ -48,7 +48,9 @@ export const PuppyPalButton = () => {
   //IF USER HAS 1 DOG
   if (dogList.length == 1) {
     // TODO(Trystan): Brian, do something.
-    return <PuppyPalSingleDog userDog={dogList.at(0)} targetDogId={dogList[0].id}/>;
+    return (
+      <PuppyPalSingleDog userDog={dogList.at(0)} targetDogId={dogList[0].id} />
+    );
   }
 
   //IF USER HAS MORE THAN ONE DOGS. MAYBE THESE NEED TO BE THEIR OWN COMPONENTS, IDK.
@@ -179,7 +181,9 @@ export const PuppyPalSingleDog: React.FC<PuppyPalSingleDogProps> = ({
     case ButtonType.DELETE_FRIEND:
       return (
         <>
-          <Button onClick={onOpen}>Remove Friend</Button>
+          <Button onClick={onOpen} bg={"#886E58"} textColor="white">
+            Remove Friend
+          </Button>
 
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
@@ -188,17 +192,18 @@ export const PuppyPalSingleDog: React.FC<PuppyPalSingleDogProps> = ({
               <ModalCloseButton />
               <ModalBody>
                 <Text>
-                  Please confirm if you'd like to remove this user as a friend?
-                  Would you like to take a minute to look at dog pictures and
-                  reconsider?
+                  Please confirm if you'd like to remove this dog as a friend
+                  from your dog.
                 </Text>
 
                 <Flex justifyContent="space-between" pt={8}>
-                  <Button colorScheme="blue" onClick={handleRemoveFriend}>
+                  <Button
+                    backgroundColor={"#F5F2EA"}
+                    onClick={handleRemoveFriend}
+                  >
                     Confirm
                   </Button>
                   <Button onClick={onClose}>Cancel</Button>
-                  <Button onClick={onClose}>ROUTE_TO_DOGS</Button>
                 </Flex>
               </ModalBody>
             </ModalContent>
@@ -207,13 +212,19 @@ export const PuppyPalSingleDog: React.FC<PuppyPalSingleDogProps> = ({
       );
 
     case ButtonType.REQUEST_CANCEL:
-      return <Button onClick={() => handleCancel()}>Cancel Request</Button>;
+      return (
+        <Button bg={"#886E58"} textColor="white" onClick={() => handleCancel()}>
+          Cancel Request
+        </Button>
+      );
 
     case ButtonType.REQUEST_RESPOND:
       return (
         <Popover>
           <PopoverTrigger>
-            <Button>Respond</Button>
+            <Button bg={"#886E58"} textColor="white">
+              Respond to PuppyPal Request
+            </Button>
           </PopoverTrigger>
           <PopoverContent>
             <PopoverBody>
@@ -231,7 +242,11 @@ export const PuppyPalSingleDog: React.FC<PuppyPalSingleDogProps> = ({
       );
 
     default:
-      return <Button onClick={handleNewRequest}>Add PuppyPal</Button>;
+      return (
+        <Button bg={"#886E58"} textColor="white" onClick={handleNewRequest}>
+          Add PuppyPal
+        </Button>
+      );
   }
 };
 

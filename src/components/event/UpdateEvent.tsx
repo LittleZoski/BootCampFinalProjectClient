@@ -1,6 +1,6 @@
 import React from "react";
 import * as Yup from "yup";
-import { Field, Form, Formik, useFormik } from 'formik';
+import { Field, Form, Formik, useFormik } from "formik";
 import {
   background,
   Button,
@@ -23,18 +23,17 @@ import {
   Portal,
   Spinner,
   Stack,
-  Textarea,} from '@chakra-ui/react';
-import { useSession } from 'next-auth/react';
-import { updateEventByHost } from '@/queries/event.querues';
+  Textarea,
+} from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
+import { updateEventByHost } from "@/queries/event.querues";
 import { Event } from "@/types/event";
-import MapControl from '../map/MapControl';
+import MapControl from "../map/MapControl";
 import Loader from "../CustomComponents/Loader";
-
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 
-
-function UpdateEvent({event_Id}:{event_Id:number}) {
+function UpdateEvent({ event_Id }: { event_Id: number }) {
   const { data: session, status } = useSession();
 
   const updateEvent = updateEventByHost(session?.accessToken);
@@ -70,8 +69,6 @@ function UpdateEvent({event_Id}:{event_Id:number}) {
     date: Yup.date().required("This field is required"),
     eventDescription: Yup.string().required("This field is required"),
   });
-
-  
 
   const formik = useFormik({
     initialValues,
@@ -221,5 +218,4 @@ function UpdateEvent({event_Id}:{event_Id:number}) {
   );
 }
 
-
-export default UpdateEvent
+export default UpdateEvent;

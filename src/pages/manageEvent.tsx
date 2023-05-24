@@ -8,7 +8,6 @@ function manageEvent() {
 
   if (router.query.myParam !== undefined) {
     const myEvent = JSON.parse(router.query.myParam as string);
-  console.log(myEvent)  
     return (
       <Flex
         w="60%"

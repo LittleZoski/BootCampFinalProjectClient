@@ -30,7 +30,6 @@ function EventMap() {
     width: "1100px",
     height: "700px",
     borderRadius: "0.5em",
-    
   };
 
   const { data: session } = useSession();
@@ -41,18 +40,20 @@ function EventMap() {
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [map, setMap] = useState<google.maps.Map>(null);
-  const originRef:React.MutableRefObject<HTMLInputElement> = useRef();
-  const destinationRef:React.MutableRefObject<HTMLInputElement>  = useRef();
-  const router = useRouter()
-
-  console.log(direction)
-  const fetchDirection = (desposition: string | LatLngLiteral, orgposition?: string | LatLngLiteral) => {
-    
+  const originRef: React.MutableRefObject<HTMLInputElement> = useRef();
+  const destinationRef: React.MutableRefObject<HTMLInputElement> = useRef();
+  const router = useRouter();
+  const fetchDirection = (
+    desposition: string | LatLngLiteral,
+    orgposition?: string | LatLngLiteral
+  ) => {
     const service = new google.maps.DirectionsService();
-    
+
     service.route(
       {
-        origin: originRef.current.value? originRef.current.value:userLocation,
+        origin: originRef.current.value
+          ? originRef.current.value
+          : userLocation,
         destination: desposition,
         travelMode: google.maps.TravelMode.DRIVING,
       },
@@ -61,25 +62,22 @@ function EventMap() {
           setDirection(result);
           setDistance(result.routes[0].legs[0].distance.text);
           setDuration(result.routes[0].legs[0].duration.text);
-          
         }
       }
     );
   };
 
-  const clearRoutes=()=>{
+  const clearRoutes = () => {
+    setDirection(null);
+    setDistance("");
+    setDuration("");
+    originRef.current.value = "";
+    destinationRef.current.value = "";
+  };
 
-    
-    setDirection(null)
-    setDistance("")
-    setDuration("")
-    originRef.current.value=""
-    destinationRef.current.value=""
-  }
-
-  const handleRouteMap=()=>{
-    router.push("/map")
-  }
+  const handleRouteMap = () => {
+    router.push("/map");
+  };
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyBTdPPxMhqY57yRHYoP9UnBqSNHib7Fcjk",
@@ -106,16 +104,14 @@ function EventMap() {
   if (status == "error") return <div>event host user information error</div>;
 
   return (
-    <Flex mt={"5"} flexDirection={"column"} alignContent={"center"} >
+    <Flex mt={"5"} flexDirection={"column"} alignContent={"center"}>
       <GoogleMap
         zoom={9.5}
         center={userLocation}
         mapContainerStyle={containerStyle}
         onLoad={(map) => setMap(map)}
-        
-        
       >
-        {direction && <DirectionsRenderer directions={direction}  />}
+        {direction && <DirectionsRenderer directions={direction} />}
         <MarkerF
           position={userLocation}
           icon={
@@ -130,7 +126,10 @@ function EventMap() {
               position={{ lat: event.lat, lng: event.lng }}
               onClick={() => {
                 setSelectedEvent(event);
-                fetchDirection({ lat: event.lat, lng: event.lng },userLocation);
+                fetchDirection(
+                  { lat: event.lat, lng: event.lng },
+                  userLocation
+                );
               }}
             />
           );
@@ -168,43 +167,63 @@ function EventMap() {
         )}
       </GoogleMap>
 
-      <Flex justifyContent={"space-evenly"} alignItems="center" backgroundColor={"#8BCaaA"} pt="2" pb="2">
-        
-          <Flex>
-            <Button onClick={() => map.panTo(userLocation)}>
-              <StarIcon />
-            </Button>
-          </Flex>
+      <Flex
+        justifyContent={"space-evenly"}
+        alignItems="center"
+        backgroundColor={"#8BCaaA"}
+        pt="2"
+        pb="2"
+      >
+        <Flex>
+          <Button onClick={() => map.panTo(userLocation)}>
+            <StarIcon />
+          </Button>
+        </Flex>
 
-          <Flex >
-            <Autocomplete>
-              <input type="text" placeholder="origin" ref={originRef}/>
-            </Autocomplete>
-          </Flex>
+        <Flex>
+          <Autocomplete>
+            <input type="text" placeholder="origin" ref={originRef} />
+          </Autocomplete>
+        </Flex>
 
-          <Flex>
-            <Autocomplete>
-              <input type="text" placeholder="destination" ref={destinationRef}/>
-            </Autocomplete>
-          </Flex>
+        <Flex>
+          <Autocomplete>
+            <input type="text" placeholder="destination" ref={destinationRef} />
+          </Autocomplete>
+        </Flex>
 
-          <Flex>
-            <Button onClick={()=>{fetchDirection(destinationRef.current.value, originRef.current.value)}}>Check new Route</Button>
-          </Flex>
+        <Flex>
+          <Button
+            onClick={() => {
+              fetchDirection(
+                destinationRef.current.value,
+                originRef.current.value
+              );
+            }}
+          >
+            Check new Route
+          </Button>
+        </Flex>
 
-          <Flex>
-            <Button onClick={clearRoutes}>Clear all Routes</Button>
-                  
-          </Flex>
-        
+        <Flex>
+          <Button onClick={clearRoutes}>Clear all Routes</Button>
+        </Flex>
       </Flex>
 
-      <Flex justifyContent={"space-evenly"} alignItems="center" backgroundColor={"#8BCaaA"} pt="2" pb="2">
+      <Flex
+        justifyContent={"space-evenly"}
+        alignItems="center"
+        backgroundColor={"#8BCaaA"}
+        pt="2"
+        pb="2"
+      >
         <Flex>Distance: {distance}</Flex>
         <Flex>Distance: {duration}</Flex>
       </Flex>
 
-      <Flex><Button onClick={handleRouteMap}>Map</Button></Flex>
+      <Flex>
+        <Button onClick={handleRouteMap}>Map</Button>
+      </Flex>
     </Flex>
   );
 }

@@ -3,7 +3,7 @@ export default function CustomAvatar({ src, alt, size }) {
     borderRadius: "50%",
     width: size,
     height: size,
-    objectFit: "cover",
+    border: "2px solid #886E58",
   };
 
   return <img src={src} alt={alt} style={avatarStyles as any} />;

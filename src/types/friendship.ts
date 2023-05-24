@@ -1,3 +1,5 @@
+import { User, UserProfile } from "./user";
+
 export type Friendship = {
   id?: number;
   createDate: Date;
@@ -24,4 +26,10 @@ export type DogFriendRequest = {
   senderId: number;
   receiverId: number;
   createDate: Date;
+};
+
+export type FriendRequestWithUser = {
+  friendRequest: FriendRequest;
+  user: User;
+  userProfile: UserProfile;
 };

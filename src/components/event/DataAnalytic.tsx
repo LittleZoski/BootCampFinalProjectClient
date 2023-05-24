@@ -20,8 +20,6 @@ function DataAnalytic({ eventId }: { eventId: number }) {
   const { data: session } = useSession();
   const { status, data } = useGetAllDogsInEvent(session?.accessToken, eventId);
 
-  console.log(data);
-
   if (status === "loading") return <Spinner />;
   if (status === "error")
     return <>the API call for useGetAllDogsInEvent entered an error</>;
@@ -40,7 +38,6 @@ function DataAnalytic({ eventId }: { eventId: number }) {
     sex,
     count: sexCounts[sex],
   }));
-  console.log(sexData)
   const legendFormatterForSex = (value) => {
     const sexValues = Object.values(Sex);
     const sexIndex = value % sexValues.length;
@@ -54,15 +51,22 @@ function DataAnalytic({ eventId }: { eventId: number }) {
   }, {});
 
   const breedData = Object.keys(breedCounts).map((breed, index) => ({
-    id:index,
+    id: index,
     breed,
     count: breedCounts[breed],
   }));
 
-  console.log(breedData)
   const COLORS = ["#8884d8", "#82ca9d", "#006c6c", "#800040", "#008000"];
   return (
-    <Flex borderRadius={"5"} flexDirection="column"  justifyContent={"center"} alignItems={"center"} fontSize={"xl"} flexWrap={"wrap"} backgroundColor={"#464b5c"}>
+    <Flex
+      borderRadius={"5"}
+      flexDirection="column"
+      justifyContent={"center"}
+      alignItems={"center"}
+      fontSize={"xl"}
+      flexWrap={"wrap"}
+      backgroundColor={"#464b5c"}
+    >
       <Flex>
         <BarChart
           width={450}
@@ -74,10 +78,9 @@ function DataAnalytic({ eventId }: { eventId: number }) {
             left: 20,
             bottom: 5,
           }}
-          
         >
-          <CartesianGrid strokeDasharray="3 3"  stroke="#1e858f"/>
-          <XAxis dataKey="name" stroke="#916065"/>
+          <CartesianGrid strokeDasharray="3 3" stroke="#1e858f" />
+          <XAxis dataKey="name" stroke="#916065" />
           <YAxis stroke="#916065" />
           <Tooltip />
           <Legend />
@@ -105,7 +108,7 @@ function DataAnalytic({ eventId }: { eventId: number }) {
               />
             ))}
           </Pie>
-          <Legend formatter={legendFormatterForSex}  />
+          <Legend formatter={legendFormatterForSex} />
         </PieChart>
       </Flex>
 

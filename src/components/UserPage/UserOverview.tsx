@@ -3,19 +3,16 @@ import { Dog } from "@/types/dog";
 import {
   Flex,
   VStack,
-  Text,
   SimpleGrid,
   GridItem,
-  useBreakpointValue,
   Heading,
   Box,
 } from "@chakra-ui/react";
 import { DogAvatarSmall } from "../DogCard";
 import { UserProfilePhoto } from "./UserProfilePhoto";
-import { useSession } from "next-auth/react";
 import { User, UserProfile } from "@/types/user";
 import { Friendship } from "@/types/friendship";
-import { FriendButton, FriendButtonSmall } from "../Friends/FriendButton";
+import { FriendButtonUserSummary } from "../Friends/FriendButton";
 
 type UserSideBarProps = {
   user: User;
@@ -30,15 +27,6 @@ const UserOverView: React.FC<UserSideBarProps> = ({
   friendList,
   userProfile,
 }) => {
-  const { data: session } = useSession();
-  const buttonSpacer = useBreakpointValue({ base: 1, md: "60px" });
-
-  let friend: string;
-  friendList.length == 1 ? (friend = "Friend") : (friend = "Friends");
-
-  let dog: string;
-  dogList.length == 1 ? (dog = "Dog") : (dog = "Dogs");
-
   return (
     <>
       <Flex h={{ base: "auto" }} py={5}>
@@ -48,19 +36,17 @@ const UserOverView: React.FC<UserSideBarProps> = ({
             id="userData"
             columns={1}
             columnGap={3}
-            rowGap={2}
+            rowGap={1}
             w={"full"}
             pl={3}
           >
             <GridItem colSpan={1}>
               <Heading>{user.fullName}</Heading>
             </GridItem>
-            <GridItem colSpan={1}>
-              <Text>
-                {friendList.length} {friend} | {dogList.length} {dog}
-              </Text>
+            <GridItem colSpan={1} pl={1}>
+              <FriendsAndDogs friendList={friendList} dogList={dogList} />
             </GridItem>
-            <GridItem colSpan={1} columnGap={0}>
+            <GridItem colSpan={1} columnGap={0} pl={1}>
               {dogList.map((dog: Dog, index: number) => (
                 <DogAvatarSmall key={index} dog={dog} />
               ))}
@@ -68,9 +54,43 @@ const UserOverView: React.FC<UserSideBarProps> = ({
           </SimpleGrid>
         </VStack>
         <Box ml={"auto"}>
-          <FriendButtonSmall friends={friendList} />
+          <FriendButtonUserSummary friends={friendList} userId={user.id} />
         </Box>
       </Flex>
+    </>
+  );
+};
+
+//This next part is WILDY over-engineered.
+interface FriendsAndDogsProps {
+  friendList: Friendship[];
+  dogList: Dog[];
+}
+
+const FriendsAndDogs = ({ friendList, dogList }: FriendsAndDogsProps) => {
+  let friend: string;
+  let friendLen: number | string;
+  let dog: string;
+  let dogLen: number | string;
+
+  if (friendList.length === undefined) {
+    friend = "Friends";
+    friendLen = "0";
+  } else {
+    friend = friendList.length === 1 ? "Friend" : "Friends";
+    friendLen = friendList.length;
+  }
+
+  if (dogList === undefined) {
+    dog = "Dogs";
+    dogLen = "0";
+  } else {
+    dog = dogList.length === 1 ? "Dog" : "Dogs";
+    dogLen = dogList.length;
+  }
+  return (
+    <>
+      {friendLen} {friend} | {dogLen} {dog}
     </>
   );
 };

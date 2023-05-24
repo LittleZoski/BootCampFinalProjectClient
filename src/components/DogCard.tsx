@@ -3,19 +3,14 @@ import { Dog } from "@/types/dog";
 import {
   Flex,
   Box,
-  Image,
   Text,
   PopoverTrigger,
   Avatar,
   Popover,
   PopoverContent,
-  PopoverHeader,
-  PopoverCloseButton,
-  PopoverArrow,
   PopoverBody,
   Grid,
   GridItem,
-  Button,
   HStack,
   Portal,
 } from "@chakra-ui/react";
@@ -75,7 +70,7 @@ function DogAvatarSmall({ dog }: { dog: Dog }) {
             size={"md"}
           />
         </PopoverTrigger>
-        <PopoverContent minW={{ base: "100%", lg: "max-content" }}>
+        <PopoverContent minW={"max-content"} backgroundColor={"#F5F2EA"}>
           <PopoverBody>
             <Grid
               h="250px"
@@ -111,7 +106,7 @@ function DogAvatarSmall({ dog }: { dog: Dog }) {
               <GridItem rowSpan={8} colSpan={7} pl={2}>
                 {dogProfile.bio}
               </GridItem>
-              <GridItem rowSpan={5} colSpan={12} bg="red">
+              <GridItem rowSpan={5} colSpan={12}>
                 <PuppyPalButton />
               </GridItem>
             </Grid>
@@ -197,7 +192,7 @@ function DogCardSmall({ dog }: { dog: Dog }) {
             </Box>
           </Box>
         </PopoverTrigger>
-        <PopoverContent minW={{ base: "100%", lg: "max-content" }}>
+        <PopoverContent minW={"max-content"} backgroundColor={"#F5F2EA"}>
           <PopoverBody>
             <Grid
               h="250px"
@@ -237,7 +232,7 @@ function DogCardSmall({ dog }: { dog: Dog }) {
               <GridItem rowSpan={8} colSpan={7} pl={2}>
                 {dogProfile.bio}
               </GridItem>
-              <GridItem rowSpan={5} colSpan={12} bg="red">
+              <GridItem rowSpan={5} colSpan={12}>
                 <PuppyPalButton />
               </GridItem>
             </Grid>
@@ -248,4 +243,70 @@ function DogCardSmall({ dog }: { dog: Dog }) {
   );
 }
 
-export { DogCardSmall, DogAvatarSmall };
+function DogCardBig({ dog }: { dog: Dog }) {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const { isLoading: dogPhotoIsLoading, data: dogPhoto } =
+    useGetDogProfilePhoto(session?.accessToken, dog.id);
+
+  const { isLoading: dogProfileIsLoading, data: dogProfile } = useGetDogProfile(
+    session?.accessToken,
+    dog.id
+  );
+
+  if (dogPhotoIsLoading || dogProfileIsLoading) {
+    return <Loader />;
+  }
+
+  const genderIcon =
+    dog.sex == "MALE" ? (
+      <BsGenderMale color="blue" size={"28px"} />
+    ) : (
+      <BsGenderFemale color="pink" size={"28px"} />
+    );
+
+  const alteredStatus =
+    dog.sex == "MALE" ? (
+      dog.altered ? (
+        <Text>Neutered</Text>
+      ) : (
+        <Text>Not Neutered</Text>
+      )
+    ) : dog.altered ? (
+      <Text>Spayed</Text>
+    ) : (
+      <Text>Not Spayed</Text>
+    );
+
+  const gotoDog = (dogId: number) => {
+    router.push({ pathname: `/dog-profile`, query: { myParam: dogId } });
+  };
+
+  return (
+    <Flex w="full">
+      <Box
+        bg={"#886E58"}
+        maxW="sm"
+        borderWidth="1px"
+        rounded="18px"
+        shadow="lg"
+        position="relative"
+        textColor={"white"}
+        alignContent={"center"}
+      >
+        <Box p={3} alignContent={"center"}>
+          <Avatar
+            onClick={() => gotoDog(dog.id)}
+            src={`data:image/png;base64, ${dogPhoto}`}
+            size={"4xl"}
+            boxShadow={
+              "0px 1px 18px -5px rgb(0 0 0 / 57%), 0 10px 10px -5px rgb(0 0 0 / 45%)"
+            }
+          />
+        </Box>
+      </Box>
+    </Flex>
+  );
+}
+
+export { DogCardSmall, DogAvatarSmall, DogCardBig };

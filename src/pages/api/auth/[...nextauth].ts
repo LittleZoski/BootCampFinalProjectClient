@@ -80,13 +80,12 @@ export default NextAuth({
     adapter: {
         // @ts-ignore
         createUser: async ({ name, email, image }) => {
-            const createUserRequest = { fullName: name, email, profilePhotoUrl: image };
+            const createUserRequest = { fullName: name, email };
             const createUserResponse = await api.post<apiUser>("/users", createUserRequest);
             const user: User = {
                 id: createUserResponse.data.id + '',
                 name: createUserResponse.data.fullName,
-                email: createUserResponse.data.email,
-                image: createUserResponse.data.profilePhotoUrl
+                email: createUserResponse.data.email
             };
             return { ...user, emailVerified: null };
         },
@@ -98,8 +97,7 @@ export default NextAuth({
                 user = {
                     id: searchResponse.data.id + '',
                     name: searchResponse.data.fullName,
-                    email: searchResponse.data.email,
-                    image: searchResponse.data.profilePhotoUrl
+                    email: searchResponse.data.email
                 };
             } catch(e) {
                 if(e.response.status === 404){
@@ -119,8 +117,7 @@ export default NextAuth({
                 user = {
                     id: searchResponse.data.id + '',
                     name: searchResponse.data.fullName,
-                    email: searchResponse.data.email,
-                    image: searchResponse.data.profilePhotoUrl
+                    email: searchResponse.data.email
                 };
             } catch(e) {
                 if(e.response.status === 404){
@@ -139,8 +136,7 @@ export default NextAuth({
                 user = {
                     id: searchResponse.data.id,
                     name: searchResponse.data.fullName,
-                    email: searchResponse.data.email,
-                    image: searchResponse.data.profilePhotoUrl
+                    email: searchResponse.data.email
                 };
             } catch(e) {
                 if(e.response.status === 404){

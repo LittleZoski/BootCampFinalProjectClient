@@ -49,20 +49,38 @@ const UserShortcutBar: React.FC<UserShortcutBarProps> = ({
 
   const renderPhotos = () => {};
 
-  const renderEvents = () => {};
-
+  const renderEvents = () => {
+    setViewAbout(false);
+    setViewPets(false);
+    setViewFriends(false);
+    setViewPhotos(false);
+    setViewEvents(true);
+    setViewAwards(false);
+  };
   return (
     <>
       <Flex w={"full"}>
-        <Button colorScheme={"blue"} onClick={renderAbout}>
+        <Button bg={"#886E58"} textColor="white" onClick={renderAbout}>
           About
         </Button>
-        <Button onClick={renderPets}>Pets</Button>
-        <Button>Spots</Button>
-        <Button onClick={renderFriends}>Friends</Button>
-        <Button onClick={renderPhotos}>Photos</Button>
-        <Button onClick={renderEvents}>Events</Button>
-        <Button>Awards</Button>
+        <Button onClick={renderPets} bg={"#886E58"} textColor="white">
+          Pets
+        </Button>
+        <Button bg={"#886E58"} textColor="white">
+          Spots
+        </Button>
+        <Button onClick={renderFriends} bg={"#886E58"} textColor="white">
+          Friends
+        </Button>
+        <Button onClick={renderPhotos} bg={"#886E58"} textColor="white">
+          Photos
+        </Button>
+        <Button onClick={renderEvents} bg={"#886E58"} textColor="white">
+          Events
+        </Button>
+        <Button bg={"#886E58"} textColor="white">
+          Awards
+        </Button>
       </Flex>
     </>
   );

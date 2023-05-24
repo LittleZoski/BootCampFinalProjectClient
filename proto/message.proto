@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package grpc.message;
+
+import "google/protobuf/timestamp.proto";
+
+message MessageRequest {
+ int32 roomId = 1;
+ string message = 2;
+}
+
+message MessageResponse {
+  bytes id = 1;
+  string message = 2;
+  int32 userId = 3;
+  google.protobuf.Timestamp createdAt = 4;
+}
+
+service Message {
+ rpc GetMessages(MessageRequest) returns (stream MessageResponse) {}
+ rpc SendMessage(MessageRequest) returns (MessageResponse) {}
+}

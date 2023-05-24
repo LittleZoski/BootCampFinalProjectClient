@@ -1,24 +1,29 @@
-import {
-  useGetFriendList,
-  useGetSentFriendRequests,
-} from "@/queries/friend.queries";
-
+import { useGetOpenFriendRequests } from "@/queries/friend.queries";
 import { useSession } from "next-auth/react";
 import Loader from "../CustomComponents/Loader";
-import { useRouter } from "next/router";
-import { FriendButton } from "../Friends/FriendButton";
+import { Box } from "@chakra-ui/react";
+import { FriendRequestWithUser } from "@/types/friendship";
+import { FriendNotificationButton } from "../Friends/FriendButton";
 
-function FriendNotification() {
+export const FriendNotification = () => {
   const { data: session } = useSession();
-  const router = useRouter();
+  const { data: friendRequest, isLoading: friendRequestsIsLoading } =
+    useGetOpenFriendRequests(session?.accessToken);
 
-  const { isLoading: friendListIsLoading, data: friendList } =
-    useGetSentFriendRequests(session?.accessToken);
-
-  if (friendListIsLoading) {
+  if (friendRequestsIsLoading) {
     return <Loader />;
   }
-  return <></>;
-}
 
-export default FriendNotification;
+  return (
+    <>
+      {friendRequest.map((frObject: FriendRequestWithUser, key: number) => {
+        return (
+          <div key={key}>
+            <p>{frObject.user.displayName}</p>
+            <FriendNotificationButton friendRequestId={frObject.user.id} />
+          </div>
+        );
+      })}
+    </>
+  );
+};

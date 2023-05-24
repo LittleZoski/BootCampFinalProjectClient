@@ -5,36 +5,30 @@ import AboutDog from "./AboutDog";
 import DogOverView from "./DogOverview";
 import DogShortcutBar from "./DogShortcutBar";
 import DogSideBar from "./DogSideBar";
+import Loader from "../CustomComponents/Loader";
 
 function DogPage({ dogId }: { dogId: number }) {
 	const { data: session } = useSession();
-	const { status, data: dogProfile } = useGetDogProfileByDogId(
+	const { isLoading, data: dogProfile } = useGetDogProfileByDogId(
 		session?.accessToken,
 		dogId
 	);
 
-	if (status === "loading") {
-		return <Spinner></Spinner>;
+	if (isLoading) {
+		return <Loader />;
 	}
-
-	if (status === "success") {
-		return (
-			<>
-				<Container
-					maxW="container.xl"
-					backgroundColor={"#F5F2EA"}
-					rounded={"lg"}
-				>
-					<DogOverView
-						dogProfile={dogProfile}
-						accessToken={session.accessToken}
-					/>
-					<DogShortcutBar dogProfile={dogProfile} />
-					<DogSideBar dogProfile={dogProfile} session={session} />
-				</Container>
-			</>
-		);
-	}
+	return (
+		<>
+			<Container maxW="container.xl" backgroundColor={"#F5F2EA"} rounded={"lg"}>
+				<DogOverView dogProfile={dogProfile} session={session} />
+				<DogShortcutBar
+					dogProfile={dogProfile}
+					accessToken={session?.accessToken}
+				/>
+				<DogSideBar dogProfile={dogProfile} session={session} />
+			</Container>
+		</>
+	);
 }
 
 export default DogPage;
