@@ -75,6 +75,7 @@ function EventManagementCard({ event }: { event: Event }) {
       borderRadius="1.5em"
       bg={"#886E58"}
       mb="5"
+      mt={"5"}
       fontFamily={"font-family: Arial, sans-serif;"}
       fontSize="3xl"
       fontStyle={"italic"}

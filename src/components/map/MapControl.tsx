@@ -35,10 +35,12 @@ function MapControl(props) {
   const center = useMemo<LatLngLiteral>(() => ({ lat: 43, lng: -80 }), []);
   const [eventLocation, setEventLoaction] = useState<LatLngLiteral>();
   const mapRef = useRef<GoogleMap>();
+
   const [isLargerThan950] = useMediaQuery("(min-width: 950px)", {
     ssr: true,
     fallback: false, // return false on the server, and re-evaluate on the client side
   });
+  
   const options = useMemo(
     () => ({
       disableDefaultUI: false,
