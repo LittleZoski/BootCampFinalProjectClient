@@ -6,6 +6,7 @@ import {
   Friendship,
 } from "@/types/friendship";
 import { Dispatch, SetStateAction } from "react";
+import { User } from "@/types/user";
 
 export const useGetFriendList = (
   accessToken: string,
@@ -98,6 +99,21 @@ export const useCancelFriendRequest = (accessToken: string) => {
   );
 };
 
+export const useAcceptFriendRequestStateless = (accessToken: string) => {
+  const backendAPI = getAxiosBackend(accessToken);
+
+  return useMutation(
+    (requestId: string | number) =>
+      backendAPI.put<Friendship>(`/acceptfriendship/${requestId}`),
+    {
+      onSuccess: (response) => {},
+      onError: (error) => {
+        console.error("Error accepting request", error);
+      },
+    }
+  );
+};
+
 export const useAcceptFriendRequest = (
   accessToken: string,
   setRelationId: Dispatch<SetStateAction<string | number>>
@@ -123,6 +139,17 @@ export const useRejectFriendRequest = (accessToken: string) => {
 
   return useMutation((requestId: string | number) =>
     backendAPI.delete<FriendRequest>(`/rejectfriendship/${requestId}`)
+  );
+};
+
+export const useGetMutualFriends = (
+  accessToken: string,
+  userId: string | number
+) => {
+  const backendAPI = getAxiosBackend(accessToken);
+
+  return useQuery(["mutualFriends", userId], () =>
+    backendAPI.get<User[]>(`mutualfriends/${userId}`)
   );
 };
 

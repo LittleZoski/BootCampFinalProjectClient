@@ -8,6 +8,7 @@ import {
 	Flex,
 	Heading,
 	HStack,
+	Link,
 	Spinner,
 	Text,
 	useBreakpointValue,
@@ -65,10 +66,11 @@ function Post({ session, post }: { session: Session; post: Post }) {
 						photoId={userProfile.profilePhotoId}
 						accessToken={session?.accessToken}
 					/>
-
+					<Link href={`user-profile?myParam=${author.id}`}>
 					<Heading marginTop={3} size={"sm"}>
 						{author.displayName}
 					</Heading>
+					</Link>
 					<Text>{getDate()}</Text>
 				</HStack>
 

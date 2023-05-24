@@ -15,7 +15,7 @@ let githubSecret = "c564e1f260e6d8aed553c2c91f8e3fb4f6bb86df";
 let googleClientId = "314258814893-b1htlcmstf75cponsvgg47678po8u61t.apps.googleusercontent.com";
 let googleSecret = "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";
 
-if(process.env ){
+if(process.env.NEXT_PUBLIC_PROD){
     console.log("USING PRODUCTION ENVIRONMENT VARIABLES");
     springBootUrl = process.env.NEXT_PUBLIC_SPRING_BOOT_URL;
     githubClientId = process.env.GITHUB_CLIENT_ID;

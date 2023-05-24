@@ -1,12 +1,11 @@
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
-import VideoCard from "@/components/VideoCard";
 import EventList from "@/components/event/EventList";
 import { Box, Center, ChakraProvider, Flex, chakra } from "@chakra-ui/react";
 import React from "react";
 import withAuth from "@/components/withAuth";
 import { FaPaw } from "react-icons/fa";
-import Carousel from "@/components/Carousel";
+import HomePostComponent from "@/components/PostComponents/HomePostComponent";
 <link
   href="https://fonts.googleapis.com/css?family=Wire+One|Raleway:300"
   rel="stylesheet"
@@ -60,7 +59,16 @@ function home() {
           </chakra.h1>
         </Flex>
       </Center>
-      <VideoCard />
+      <Center>
+        <Box width={"900px"} h={"420px"} overflowY="auto" py={5}>
+          <Box>
+            <HomePostComponent />
+          </Box>
+        </Box>
+      </Center>
+      <br/>
+      <br/>
+      <br/>
       <Footer />
     </ChakraProvider>
   );
