@@ -27,6 +27,8 @@ function UserTimeline({
     data: postData,
   } = getAllPostsByCurrentUser(session?.accessToken, user?.id);
 
+  //get all posts qeuery
+
   if (isLoading) {
     return <Loader />;
   }
