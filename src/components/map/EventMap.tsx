@@ -16,6 +16,7 @@ import { getAllEvent } from "@/queries/event.querues";
 import { useRouter } from "next/router";
 import { Box, Button, Flex, flexbox, position } from "@chakra-ui/react";
 import { StarIcon } from "@chakra-ui/icons";
+import EventCard from "../event/EventCard";
 
 const libraries = ["places"] as any;
 type LatLngLiteral = google.maps.LatLngLiteral;
@@ -40,6 +41,7 @@ function EventMap() {
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [map, setMap] = useState<google.maps.Map>(null);
+  const [closesteEvent, setClosesteEvent] = useState()
   const originRef: React.MutableRefObject<HTMLInputElement> = useRef();
   const destinationRef: React.MutableRefObject<HTMLInputElement> = useRef();
   const router = useRouter();
@@ -66,6 +68,42 @@ function EventMap() {
       }
     );
   };
+  
+  const handleNearestEvent =()=>{
+    let closestEvent = null;
+    let closestDistance = Infinity;
+    data.forEach((event) => {
+      const distance = calculateDistance(
+        event.lat,
+        event.lng,
+        userLocation.lat,
+        userLocation.lng
+      );
+  
+      if (distance < closestDistance) {
+        closestEvent = event;
+        closestDistance = distance;
+      }
+    });
+    setClosesteEvent(closestEvent)
+  }
+
+
+  const calculateDistance = (lat1, lng1, lat2, lng2) => {
+    const earthRadius = 6371; // Earth's radius in kilometers
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = earthRadius * c;
+    return distance;
+  };
+
 
   const clearRoutes = () => {
     setDirection(null);
@@ -224,6 +262,10 @@ function EventMap() {
       <Flex>
         <Button onClick={handleRouteMap}>Map</Button>
       </Flex>
+      <Flex>
+        <Button onClick={handleNearestEvent}>find nearest event</Button>
+      </Flex>
+      <Flex>{closesteEvent && <EventCard event={closesteEvent}  />}</Flex>
     </Flex>
   );
 }
