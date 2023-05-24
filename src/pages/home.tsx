@@ -60,12 +60,15 @@ function home() {
         </Flex>
       </Center>
       <Center>
-        <Box width={"900px"} h={"520px"} overflowY="auto" py={5}>
+        <Box width={"900px"} h={"420px"} overflowY="auto" py={5}>
           <Box>
             <HomePostComponent />
           </Box>
         </Box>
       </Center>
+      <br/>
+      <br/>
+      <br/>
       <Footer />
     </ChakraProvider>
   );

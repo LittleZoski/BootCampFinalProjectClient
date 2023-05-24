@@ -1,25 +1,10 @@
 import { useState } from "react";
 import {
-  Avatar,
-  Box,
-  Card,
-  Flex,
-  Heading,
-  HStack,
   Spinner,
-  Stack,
-  Text,
+  StackDivider,
   VStack,
 } from "@chakra-ui/react";
-import { Post } from "@/types/post";
-import UserPostProfilePhoto from "./UserPostProfilePhoto";
-import LikeButton from "./LikeButton";
-import CommentButton from "./CommentButton";
-import { useGetUserById, useGetUserProfile } from "@/queries/user.queries";
 import { useGetAllPosts } from "@/queries/post.queries";
-import { Session } from "next-auth";
-import { toDate, formatDistanceToNow, intlFormatDistance } from "date-fns";
-import Loader from "../CustomComponents/Loader";
 import PostComponent from "./PostComponent";
 import { useSession } from "next-auth/react";
 
@@ -38,7 +23,11 @@ function Timeline() {
             });
         
             return (
-              <Stack>
+              <VStack
+  divider={<StackDivider borderColor='gray.200' />}
+  spacing={4}
+  align='stretch'
+>
                 {getAllPosts.data.map((post) =>
                   post.commentId ? null : (
                     <>
@@ -46,7 +35,7 @@ function Timeline() {
                     </>
                   )
                 )}
-              </Stack>
+              </VStack>
             );
           }
         }
