@@ -86,8 +86,6 @@ function EventCard({ event }: { event: Event }) {
                   <Flex mb="1em" ml="2em">
                     {status == "error"
                       ? "User Not Exist"
-                      : status == "loading"
-                      ? "loading user information"
                       : data.fullName}
                   </Flex>
                   <Flex mb="1em" ml="2em">
@@ -192,8 +190,6 @@ function EventCard({ event }: { event: Event }) {
                   <Flex mb="0.5em" ml="2.5em" mt="1em">
                     {status == "error"
                       ? "User Not Exist"
-                      : status == "loading"
-                      ? "loading user information"
                       : data.fullName}
                   </Flex>
                   <Flex mx="2em">
