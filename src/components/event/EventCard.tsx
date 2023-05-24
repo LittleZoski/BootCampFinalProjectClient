@@ -123,9 +123,7 @@ function EventCard({ event }: { event: Event }) {
                   <Flex ml="3em" flexDirection="column">
                     <Flex>{event.eventDescription} </Flex>
                     <Flex>Where: {event.eventLocation}</Flex>
-                    <Flex>
-                      When: {event.date} {event.time}
-                    </Flex>
+                    <Flex>When: {event.date} {event.time}</Flex>
                   </Flex>
                 </GridItem>
                 <GridItem pl="1em" area={"footer"} color="white">
@@ -168,7 +166,7 @@ function EventCard({ event }: { event: Event }) {
                 </GridItem>
                 <GridItem pl="2" area={"time"} color="white">
                   <Flex justifyContent="center">{event.time}</Flex>
-                  <Flex justifyContent="center" color="teal.200">{DTOdata? DTOdata.goingStatus +" "+ DTOdata.eventInvitedStatus: null}</Flex>
+                  <Flex justifyContent="center" color="teal.200">{DTOdata? DTOdata.goingStatus +": "+ DTOdata.eventInvitedStatus: null}</Flex>
                 </GridItem>
               </Grid>
             )}

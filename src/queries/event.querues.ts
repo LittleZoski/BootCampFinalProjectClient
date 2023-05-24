@@ -25,10 +25,17 @@ export function getAllEvent(accessToken: string){
 }
 
 export function userAcceptEventInvite(accessToken: string){
-    const backendAPI = getAxiosBackend(accessToken);
+    const backendAPI = getAxiosBackend(accessToken)
+    const queryClient = useQueryClient()
     return useMutation({mutationFn:(eventId: number)=>{
         return backendAPI.put<Event>(`/event/invitedEvent/${eventId}`).then((res)=>res.data)
-    }})
+    },
+
+    onSuccess:(data)=>{
+        queryClient.invalidateQueries()
+    }
+})
+    
 }
 
 export function hostInviteToEvent(accessToken: string){
@@ -45,10 +52,16 @@ export function hostInviteToEvent(accessToken: string){
 }
 
 export function userApplyToUninvitedEvent(accessToken: string){
-    const backendAPI = getAxiosBackend(accessToken);
+    const backendAPI = getAxiosBackend(accessToken)
+    const queryClient = useQueryClient()
     return useMutation({mutationFn:(eventId: number)=>{
         return backendAPI.put<Event>(`/event/applyToEvent/${eventId}`).then((res)=>res.data)
-    }})
+    },
+    onSuccess:(data)=>{
+        queryClient.invalidateQueries()
+    }
+})
+    
 }
 
 export function hostAcceptUserApplication(accessToken: string){
